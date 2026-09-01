@@ -1,0 +1,42 @@
+{
+  "LAYER-A2E984": {
+    "type": "layering_behavior",
+    "transaction_count": 4,
+    "txids": [
+      "d62e7153af5af4e15a91f7f0609a20267fa90a1eb48834ba72a60ee487834789",
+      "0a9a1af124b7c05078a8331423f0230a70b63f5b700855d00600d4aca9626052",
+      "dabf220c423427992168f24cf4456178daaa422ae85ad719255f5b37d6117210",
+      "07d9a9a2166ef3e02cc53c431089f31af21c96991f56777927f34fdcfdeffbc9"
+    ],
+    "description": "Rapid hop 1 in synthetic layering chain."
+  },
+  "MIXER-C52414": {
+    "type": "mixer_behavior",
+    "transaction_count": 7,
+    "txids": [
+      "37b9fbccd709fd5b4e01471b00f0830b87398ed4286e6feb7dbe99aff761bfc1",
+      "8400899bea769b5e1d7c6f12bbf8559bb1cadf413ef598772c3480cd806d5187",
+      "b9a24b07308c2cc5e426a5837ed32ab52742ace5342f2305ee1d378ed54d14e0",
+      "e3c0c189bd20012ed6b597b29e4d2e6b1a8dfd057c0c329ef058b699a7b517cd",
+      "e0e41bd66a5198ded9870fde543464127b267faf828fbe8ea28f921ef5ba8bc0",
+      "fe05c0362db46fa4bf13578ddacbfa257a40f9402f184e6332572ea89a26c872",
+      "b980eb2211aa8e77b0f599414c8d22270aa4508368c06beb1e0b87676bb59bef"
+    ],
+    "description": "Synthetic many-to-one aggregation."
+  },
+  "RANSOM-D9B1FC": {
+    "type": "ransomware_behavior",
+    "transaction_count": 8,
+    "txids": [
+      "44dd169904ecd4682eef1933b16f24d34f2c5ea0ec69924c8bef617170fcd602",
+      "c6cb1dabbb1d378ed036c352d58b84c64e7b8f3ea7573f44ebf7ca0de6a0c0f2",
+      "143f0a988c2f7e424dbd840abe72858520129eee365898c5c8560ab5fd1cb3da",
+      "c0fef27b56589c6b990df51a9509eb8bb747fc5696132ba8ffa850aac9601590",
+      "82b57e5df808c95b47e1053ab288ba5abf03908c702f2f3c5481a9f9f854522a",
+      "7de3d78e0fbebc08ee583bfd4da3262360e23166498a910299674cf8241ec3ab",
+      "7acd2d97a9b3e4a4d30bc88a3fe153a69cba8cf9ad970094185106170ca9d716",
+      "9e0f36c3dfa966889a4541c9793aff594b1868d77a9103c27c15b7ac57f17a9e"
+    ],
+    "description": "Synthetic burst of payments consolidated into a ransom wallet."
+  }
+}
