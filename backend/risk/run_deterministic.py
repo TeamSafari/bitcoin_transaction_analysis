@@ -173,9 +173,7 @@ data["wallet_id"] = (
 # RUN DETERMINISTIC ENGINE
 # ============================================================
 
-engine = DeterministicRiskEngine(
-    tail_percentile=0.95
-)
+engine = DeterministicRiskEngine()
 
 deterministic_results = engine.run(
     data

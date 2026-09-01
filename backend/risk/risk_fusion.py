@@ -308,9 +308,14 @@ def add_training_label(
             "must contain label."
         )
 
-    truth["label"] = pd.to_numeric(
-        truth["label"],
-        errors="coerce",
+    label_values = truth["label"].astype(str).str.strip().str.lower()
+    truth["label"] = label_values.map(
+        {
+            "normal": 0,
+            "suspicious": 1,
+            "0": 0,
+            "1": 1,
+        }
     )
 
     if truth["label"].isna().any():
