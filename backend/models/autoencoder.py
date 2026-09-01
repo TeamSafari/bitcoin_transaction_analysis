@@ -3,81 +3,50 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-
 import torch
 import torch.nn as nn
 
 from sklearn.preprocessing import StandardScaler
-from torch.utils.data import (
-    DataLoader,
-    TensorDataset,
-)
+from torch.utils.data import DataLoader, TensorDataset
 
 
 # ============================================================
-# PROJECT PATHS
+# CONFIGURATION
 # ============================================================
 
-# This file is:
-# backend/models/autoencoder.py
+DATA_DIR = Path("./data")
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+OUTPUT_DIR = Path("./outputs")
 
-OUTPUT_DIR = PROJECT_ROOT / "outputs"
-
-FEATURE_DIR = OUTPUT_DIR / "features"
-
-GRAPH_DIR = OUTPUT_DIR / "graphs"
-
-MODEL_OUTPUT_DIR = OUTPUT_DIR / "models"
-
-ARTIFACT_DIR = (
-    PROJECT_ROOT
-    / "backend"
-    / "models"
-    / "artifacts"
-)
-
-
-# ============================================================
-# INPUT FILES
-# ============================================================
+ARTIFACT_DIR = Path("./artifacts")
 
 WALLET_FEATURES_FILE = (
-    FEATURE_DIR / "wallet_features.csv"
+    DATA_DIR / "wallet_features.csv"
 )
 
 GRAPH_FEATURES_FILE = (
-    GRAPH_DIR / "graph_features.csv"
+    DATA_DIR / "graph_features.csv"
 )
 
 GRAPHSAGE_FILE = (
-    GRAPH_DIR / "graphsage_embeddings.csv"
+    DATA_DIR / "graphsage_embeddings.csv"
 )
 
-
-# ============================================================
-# OUTPUT FILES
-# ============================================================
-
-SCORES_FILE = (
-    MODEL_OUTPUT_DIR
-    / "autoencoder_scores.csv"
+OUTPUT_FILE = (
+    OUTPUT_DIR / "autoencoder_scores.csv"
 )
 
 MODEL_FILE = (
-    ARTIFACT_DIR
-    / "autoencoder.pt"
+    ARTIFACT_DIR / "autoencoder.pt"
 )
 
 SCALER_FILE = (
-    ARTIFACT_DIR
-    / "autoencoder_scaler.pkl"
+    ARTIFACT_DIR / "autoencoder_scaler.pkl"
 )
 
 
 # ============================================================
-# PARAMETERS
+# MODEL PARAMETERS
 # ============================================================
 
 RANDOM_STATE = 42
@@ -93,13 +62,8 @@ WEIGHT_DECAY = 1e-5
 MAX_LATENT_DIM = 32
 
 
-np.random.seed(
-    RANDOM_STATE
-)
-
-torch.manual_seed(
-    RANDOM_STATE
-)
+np.random.seed(RANDOM_STATE)
+torch.manual_seed(RANDOM_STATE)
 
 
 # ============================================================
@@ -113,7 +77,7 @@ def load_csv(
 
     if not path.exists():
         raise FileNotFoundError(
-            f"{name} not found:\n{path}"
+            f"\n{name} not found:\n{path}"
         )
 
     df = pd.read_csv(path)
@@ -144,19 +108,16 @@ def load_csv(
 
 
 # ============================================================
-# NUMERIC FEATURES
+# KEEP NUMERIC FEATURES
 # ============================================================
 
-def extract_numeric_features(
+def numeric_features(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
 
-    result = pd.DataFrame(
-        {
-            "wallet_id":
-                df["wallet_id"]
-        }
-    )
+    result = pd.DataFrame({
+        "wallet_id": df["wallet_id"]
+    })
 
     for column in df.columns:
 
@@ -175,48 +136,90 @@ def extract_numeric_features(
 
 
 # ============================================================
-# FEATURE FUSION
+# FUSE THREE DATASETS
 # ============================================================
 
 def build_fused_features():
 
     print("=" * 60)
-    print("LOADING MODEL INPUTS")
+    print("LOADING INPUT DATA")
     print("=" * 60)
 
-    wallet = load_csv(
+    wallet_df = load_csv(
         WALLET_FEATURES_FILE,
         "wallet_features.csv",
     )
 
-    graph = load_csv(
+    graph_df = load_csv(
         GRAPH_FEATURES_FILE,
         "graph_features.csv",
     )
 
-    graphsage = load_csv(
+    sage_df = load_csv(
         GRAPHSAGE_FILE,
         "graphsage_embeddings.csv",
     )
 
-    wallet = extract_numeric_features(
-        wallet
+    print(
+        f"wallet_features: "
+        f"{len(wallet_df)} rows"
     )
 
-    graph = extract_numeric_features(
-        graph
+    print(
+        f"graph_features: "
+        f"{len(graph_df)} rows"
     )
 
-    graphsage = extract_numeric_features(
-        graphsage
+    print(
+        f"graphsage_embeddings: "
+        f"{len(sage_df)} rows"
     )
 
     # --------------------------------------------------------
-    # Wallet + NetworkX features
+    # Convert numerical columns
     # --------------------------------------------------------
 
-    fused = wallet.merge(
-        graph,
+    wallet_df = numeric_features(
+        wallet_df
+    )
+
+    graph_df = numeric_features(
+        graph_df
+    )
+
+    sage_df = numeric_features(
+        sage_df
+    )
+
+    # --------------------------------------------------------
+    # Verify common wallets
+    # --------------------------------------------------------
+
+    common_wallets = (
+        set(wallet_df["wallet_id"])
+        &
+        set(graph_df["wallet_id"])
+        &
+        set(sage_df["wallet_id"])
+    )
+
+    if not common_wallets:
+        raise ValueError(
+            "No common wallet_id values found "
+            "across the three input files."
+        )
+
+    print(
+        f"Common wallets: "
+        f"{len(common_wallets)}"
+    )
+
+    # --------------------------------------------------------
+    # Fuse
+    # --------------------------------------------------------
+
+    fused = wallet_df.merge(
+        graph_df,
         on="wallet_id",
         how="inner",
         suffixes=(
@@ -225,12 +228,8 @@ def build_fused_features():
         ),
     )
 
-    # --------------------------------------------------------
-    # Add GraphSAGE embeddings
-    # --------------------------------------------------------
-
     fused = fused.merge(
-        graphsage,
+        sage_df,
         on="wallet_id",
         how="inner",
         suffixes=(
@@ -241,14 +240,21 @@ def build_fused_features():
 
     if fused.empty:
         raise ValueError(
-            "Feature fusion produced zero rows. "
-            "Check wallet_id consistency."
+            "Feature fusion produced zero rows."
         )
+
+    # --------------------------------------------------------
+    # Remove duplicate column names
+    # --------------------------------------------------------
 
     fused = fused.loc[
         :,
         ~fused.columns.duplicated()
     ]
+
+    # --------------------------------------------------------
+    # Identify features
+    # --------------------------------------------------------
 
     feature_columns = [
         column
@@ -257,7 +263,7 @@ def build_fused_features():
     ]
 
     # --------------------------------------------------------
-    # Clean invalid values
+    # Clean infinities
     # --------------------------------------------------------
 
     fused[feature_columns] = (
@@ -299,7 +305,8 @@ def build_fused_features():
 
     if not feature_columns:
         raise ValueError(
-            "No usable features remain."
+            "No non-constant numeric features "
+            "remain after preprocessing."
         )
 
     fused = fused[
@@ -308,18 +315,20 @@ def build_fused_features():
     ]
 
     print(
-        f"Fused wallets  : {len(fused)}"
+        f"Fused rows: "
+        f"{len(fused)}"
     )
 
     print(
-        f"Fused features : {len(feature_columns)}"
+        f"Fused features: "
+        f"{len(feature_columns)}"
     )
 
     return fused, feature_columns
 
 
 # ============================================================
-# AUTOENCODER
+# PYTORCH AUTOENCODER
 # ============================================================
 
 class Autoencoder(
@@ -334,10 +343,6 @@ class Autoencoder(
 
         super().__init__()
 
-        # ----------------------------------------------------
-        # Hidden dimension
-        # ----------------------------------------------------
-
         hidden_dim = max(
             8,
             min(
@@ -345,10 +350,6 @@ class Autoencoder(
                 input_dim * 2,
             ),
         )
-
-        # ----------------------------------------------------
-        # Encoder
-        # ----------------------------------------------------
 
         self.encoder = nn.Sequential(
 
@@ -364,10 +365,6 @@ class Autoencoder(
                 latent_dim,
             ),
         )
-
-        # ----------------------------------------------------
-        # Decoder
-        # ----------------------------------------------------
 
         self.decoder = nn.Sequential(
 
@@ -405,18 +402,17 @@ def train_autoencoder(
 ):
 
     # --------------------------------------------------------
-    # Bottleneck
+    # Determine latent dimension
     # --------------------------------------------------------
 
-    latent_dim = min(
-        MAX_LATENT_DIM,
-        max(
-            2,
-            input_dim // 4,
+    latent_dim = max(
+        2,
+        min(
+            MAX_LATENT_DIM,
+            input_dim // 2,
         ),
     )
 
-    # For very small feature spaces
     if latent_dim >= input_dim:
         latent_dim = max(
             1,
@@ -430,7 +426,7 @@ def train_autoencoder(
     )
 
     print(
-        f"Device         : {device}"
+        f"Device: {device}"
     )
 
     print(
@@ -442,7 +438,7 @@ def train_autoencoder(
     )
 
     # --------------------------------------------------------
-    # Dataset
+    # Convert to tensors
     # --------------------------------------------------------
 
     tensor = torch.tensor(
@@ -548,7 +544,7 @@ def train_autoencoder(
             )
 
     # --------------------------------------------------------
-    # Reconstruction errors
+    # Calculate reconstruction error
     # --------------------------------------------------------
 
     model.eval()
@@ -556,40 +552,23 @@ def train_autoencoder(
     errors = []
 
     inference_loader = DataLoader(
-        tensor,
+        TensorDataset(tensor),
         batch_size=BATCH_SIZE,
         shuffle=False,
     )
 
     with torch.no_grad():
+        for batch_tuple in inference_loader:
+            batch = batch_tuple[0].to(device)
 
-        for batch_tuple in (
-            inference_loader
-        ):
-
-            batch = (
-                batch_tuple[0]
-                .to(device)
-            )
-
-            reconstructed = (
-                model(batch)
-            )
+            reconstructed = model(batch)
 
             reconstruction_error = (
-                (
-                    reconstructed
-                    - batch
-                ) ** 2
-            ).mean(
-                dim=1
-            )
+                (reconstructed - batch) ** 2
+            ).mean(dim=1)
 
             errors.extend(
-                reconstruction_error
-                .cpu()
-                .numpy()
-                .tolist()
+                reconstruction_error.cpu().numpy().tolist()
             )
 
     return (
@@ -603,7 +582,7 @@ def train_autoencoder(
 
 
 # ============================================================
-# SAVE
+# SAVE RESULTS
 # ============================================================
 
 def save_results(
@@ -616,7 +595,7 @@ def save_results(
     latent_dim: int,
 ):
 
-    MODEL_OUTPUT_DIR.mkdir(
+    OUTPUT_DIR.mkdir(
         parents=True,
         exist_ok=True,
     )
@@ -627,26 +606,25 @@ def save_results(
     )
 
     # --------------------------------------------------------
-    # Reconstruction errors
+    # 1. Autoencoder scores
     # --------------------------------------------------------
 
-    output = pd.DataFrame(
-        {
-            "wallet_id":
-                fused["wallet_id"],
+    output = pd.DataFrame({
 
-            "autoencoder_reconstruction_error":
-                errors,
-        }
-    )
+        "wallet_id":
+            fused["wallet_id"],
+
+        "autoencoder_reconstruction_error":
+            errors,
+    })
 
     output.to_csv(
-        SCORES_FILE,
+        OUTPUT_FILE,
         index=False,
     )
 
     # --------------------------------------------------------
-    # PyTorch checkpoint
+    # 2. Save PyTorch model
     # --------------------------------------------------------
 
     torch.save(
@@ -670,7 +648,8 @@ def save_results(
     )
 
     # --------------------------------------------------------
-    # Exact fitted scaler
+    # 3. IMPORTANT:
+    # Save the EXACT fitted scaler
     # --------------------------------------------------------
 
     joblib.dump(
@@ -678,15 +657,21 @@ def save_results(
         SCALER_FILE,
     )
 
-    print("\nSaved:")
+    print("\nSaved artifacts:")
+
     print(
-        f"Scores : {SCORES_FILE}"
+        f"  Scores: "
+        f"{OUTPUT_FILE}"
     )
+
     print(
-        f"Model  : {MODEL_FILE}"
+        f"  Model:  "
+        f"{MODEL_FILE}"
     )
+
     print(
-        f"Scaler : {SCALER_FILE}"
+        f"  Scaler: "
+        f"{SCALER_FILE}"
     )
 
 
@@ -698,20 +683,21 @@ def main():
 
     print("\n")
     print("#" * 60)
-    print("# AUTOENCODER")
+    print("# AUTOENCODER PIPELINE")
     print("#" * 60)
 
     # --------------------------------------------------------
-    # 1. Fuse features
+    # STEP 1
+    # Fuse the three required CSVs
     # --------------------------------------------------------
 
-    (
-        fused,
-        feature_columns,
-    ) = build_fused_features()
+    fused, feature_columns = (
+        build_fused_features()
+    )
 
     # --------------------------------------------------------
-    # 2. Feature matrix
+    # STEP 2
+    # Prepare matrix
     # --------------------------------------------------------
 
     X = (
@@ -721,7 +707,8 @@ def main():
     )
 
     # --------------------------------------------------------
-    # 3. Fit scaler
+    # STEP 3
+    # FIT SCALER
     # --------------------------------------------------------
 
     scaler = StandardScaler()
@@ -737,7 +724,8 @@ def main():
     )
 
     # --------------------------------------------------------
-    # 4. Train
+    # STEP 4
+    # Train Autoencoder
     # --------------------------------------------------------
 
     (
@@ -750,7 +738,8 @@ def main():
     )
 
     # --------------------------------------------------------
-    # 5. Save
+    # STEP 5
+    # Save everything
     # --------------------------------------------------------
 
     save_results(
@@ -764,22 +753,27 @@ def main():
     )
 
     print("\n" + "=" * 60)
-    print("AUTOENCODER COMPLETE")
+    print("AUTOENCODER PIPELINE COMPLETE")
     print("=" * 60)
 
     print(
-        f"Wallets processed : "
+        f"Wallets processed: "
         f"{len(fused)}"
     )
 
     print(
-        f"Features used : "
+        f"Features used: "
         f"{len(feature_columns)}"
     )
 
     print(
-        f"Mean reconstruction error : "
+        f"Mean reconstruction error: "
         f"{errors.mean():.6f}"
+    )
+
+    print(
+        f"Max reconstruction error: "
+        f"{errors.max():.6f}"
     )
 
 
