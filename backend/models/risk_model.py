@@ -14,7 +14,9 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import (
+    train_test_split,
+)
 
 from xgboost import XGBClassifier
 
@@ -23,24 +25,13 @@ from xgboost import XGBClassifier
 # PROJECT PATHS
 # ============================================================
 
-# File location:
-# backend/models/risk_model.py
-#
-# parents[0] -> models
-# parents[1] -> backend
-# parents[2] -> project root
-
-PROJECT_ROOT = Path(
-    __file__
-).resolve().parents[2]
-
-OUTPUT_DIR = (
-    PROJECT_ROOT
-    / "outputs"
+PROJECT_ROOT = (
+    Path(__file__).resolve().parents[2]
 )
 
 MODEL_OUTPUT_DIR = (
-    OUTPUT_DIR
+    PROJECT_ROOT
+    / "outputs"
     / "models"
 )
 
@@ -52,28 +43,24 @@ ARTIFACT_DIR = (
 )
 
 
-# ============================================================
-# INPUT
-# ============================================================
-
 TRAINING_FILE = (
     MODEL_OUTPUT_DIR
     / "risk_training_features.csv"
 )
-
-
-# ============================================================
-# OUTPUT
-# ============================================================
 
 MODEL_FILE = (
     ARTIFACT_DIR
     / "risk_model.pkl"
 )
 
-PREDICTIONS_FILE = (
+ALL_PREDICTIONS_FILE = (
     MODEL_OUTPUT_DIR
     / "risk_model_predictions.csv"
+)
+
+TEST_PREDICTIONS_FILE = (
+    MODEL_OUTPUT_DIR
+    / "risk_model_test_predictions.csv"
 )
 
 METRICS_FILE = (
@@ -99,34 +86,46 @@ TARGET_COLUMN = "label"
 
 XGB_PARAMS = {
 
-    "n_estimators": 300,
+    "n_estimators":
+        300,
 
-    "max_depth": 5,
+    "max_depth":
+        5,
 
-    "learning_rate": 0.05,
+    "learning_rate":
+        0.05,
 
-    "subsample": 0.8,
+    "subsample":
+        0.8,
 
-    "colsample_bytree": 0.8,
+    "colsample_bytree":
+        0.8,
 
-    "min_child_weight": 3,
+    "min_child_weight":
+        3,
 
-    "reg_alpha": 0.1,
+    "reg_alpha":
+        0.1,
 
-    "reg_lambda": 1.0,
+    "reg_lambda":
+        1.0,
 
-    "objective": "binary:logistic",
+    "objective":
+        "binary:logistic",
 
-    "eval_metric": "logloss",
+    "eval_metric":
+        "logloss",
 
-    "random_state": RANDOM_STATE,
+    "random_state":
+        RANDOM_STATE,
 
-    "n_jobs": -1,
+    "n_jobs":
+        -1,
 }
 
 
 # ============================================================
-# LOAD DATA
+# LOAD TRAINING DATA
 # ============================================================
 
 def load_training_data():
@@ -134,11 +133,8 @@ def load_training_data():
     if not TRAINING_FILE.exists():
 
         raise FileNotFoundError(
-            f"\nTraining file not found:\n"
-            f"{TRAINING_FILE}\n\n"
-            "Expected:\n"
-            "outputs/models/"
-            "risk_training_features.csv"
+            f"Training file not found:\n"
+            f"{TRAINING_FILE}"
         )
 
     df = pd.read_csv(
@@ -148,38 +144,52 @@ def load_training_data():
     if df.empty:
 
         raise ValueError(
-            "risk_training_features.csv "
-            "is empty."
+            "Risk training dataset is empty."
         )
 
-    if TARGET_COLUMN not in df.columns:
+    required = {
+        "wallet_id",
+        TARGET_COLUMN,
+    }
+
+    missing = (
+        required
+        - set(df.columns)
+    )
+
+    if missing:
 
         raise ValueError(
-            f"Target column '{TARGET_COLUMN}' "
-            "was not found.\n\n"
-            f"Available columns:\n"
-            f"{list(df.columns)}"
+            "Training dataset is missing "
+            f"columns: {sorted(missing)}"
         )
 
-    print(
-        f"Rows loaded: {len(df)}"
+    df["wallet_id"] = (
+        df["wallet_id"]
+        .astype(str)
     )
 
-    print(
-        f"Columns loaded: "
-        f"{len(df.columns)}"
-    )
+    if df["wallet_id"].duplicated().any():
+
+        raise ValueError(
+            "Duplicate wallet_id values "
+            "found in training data."
+        )
 
     return df
 
 
 # ============================================================
-# PREPARE TARGET
+# PREPARE FEATURES
 # ============================================================
 
-def prepare_target(
-    df: pd.DataFrame,
+def prepare_features(
+    df,
 ):
+
+    # --------------------------------------------------------
+    # Target
+    # --------------------------------------------------------
 
     y = pd.to_numeric(
         df[TARGET_COLUMN],
@@ -189,83 +199,39 @@ def prepare_target(
     if y.isna().any():
 
         raise ValueError(
-            f"Target column '{TARGET_COLUMN}' "
-            "contains non-numeric or missing values."
-        )
-
-    # --------------------------------------------------------
-    # Binary target validation
-    # --------------------------------------------------------
-
-    unique_values = sorted(
-        y.unique().tolist()
-    )
-
-    if not set(unique_values).issubset(
-        {0, 1}
-    ):
-
-        raise ValueError(
-            "The risk model currently expects "
-            "a binary target encoded as 0/1.\n"
-            f"Found: {unique_values}"
+            "Risk labels contain invalid "
+            "or missing values."
         )
 
     y = y.astype(int)
 
-    if y.nunique() < 2:
+    if not set(
+        y.unique()
+    ).issubset({0, 1}):
 
         raise ValueError(
-            "Training data contains only "
-            "one target class."
+            "Risk labels must contain only "
+            "0 and 1."
         )
 
-    return y
-
-
-# ============================================================
-# PREPARE FEATURES
-# ============================================================
-
-def prepare_features(
-    df: pd.DataFrame,
-):
-
     # --------------------------------------------------------
-    # Columns that must never be used as model features
+    # Model features
     #
-    # These are identifiers / ground-truth metadata and
-    # would create leakage or meaningless learning.
+    # wallet_id and label are never features.
     # --------------------------------------------------------
 
-    EXCLUDED_COLUMNS = {
-
-        TARGET_COLUMN,
-
+    excluded_columns = {
         "wallet_id",
-
-        "behavior_type",
-
-        "scenario_id",
-
-        "wallet_type",
-
-        "primary_entity_id",
+        TARGET_COLUMN,
     }
-
-    feature_columns = []
 
     X = pd.DataFrame(
         index=df.index
     )
 
-    # --------------------------------------------------------
-    # Select numeric features
-    # --------------------------------------------------------
-
     for column in df.columns:
 
-        if column in EXCLUDED_COLUMNS:
+        if column in excluded_columns:
             continue
 
         numeric = pd.to_numeric(
@@ -273,25 +239,19 @@ def prepare_features(
             errors="coerce",
         )
 
-        # Keep columns that contain
-        # actual numerical information.
         if numeric.notna().sum() > 0:
 
             X[column] = numeric
 
-            feature_columns.append(
-                column
-            )
-
     if X.empty:
 
         raise ValueError(
-            "No numeric model features "
-            "were found."
+            "No numeric features available "
+            "for XGBoost."
         )
 
     # --------------------------------------------------------
-    # Replace infinities
+    # Clean numeric values
     # --------------------------------------------------------
 
     X = X.replace(
@@ -299,13 +259,12 @@ def prepare_features(
         np.nan,
     )
 
-    # --------------------------------------------------------
-    # Median imputation
-    # --------------------------------------------------------
-
     for column in X.columns:
 
-        median = X[column].median()
+        median = (
+            X[column]
+            .median()
+        )
 
         if pd.isna(median):
 
@@ -320,104 +279,27 @@ def prepare_features(
     # Remove constant features
     # --------------------------------------------------------
 
-    non_constant_columns = [
+    variable_columns = [
         column
         for column in X.columns
         if X[column].nunique() > 1
     ]
 
     X = X[
-        non_constant_columns
+        variable_columns
     ]
-
-    feature_columns = (
-        non_constant_columns
-    )
 
     if X.empty:
 
         raise ValueError(
-            "No non-constant features "
-            "remain."
+            "All model features are constant."
         )
 
-    print(
-        f"Model features: "
-        f"{len(feature_columns)}"
-    )
-
-    return X, feature_columns
+    return X, y
 
 
 # ============================================================
-# TRAIN / TEST SPLIT
-# ============================================================
-
-def split_data(
-    X: pd.DataFrame,
-    y: pd.Series,
-):
-
-    X_train, X_test, y_train, y_test = (
-        train_test_split(
-            X,
-            y,
-            test_size=TEST_SIZE,
-            random_state=RANDOM_STATE,
-            stratify=y,
-        )
-    )
-
-    print(
-        f"Training samples: "
-        f"{len(X_train)}"
-    )
-
-    print(
-        f"Testing samples : "
-        f"{len(X_test)}"
-    )
-
-    return (
-        X_train,
-        X_test,
-        y_train,
-        y_test,
-    )
-
-
-# ============================================================
-# HANDLE CLASS IMBALANCE
-# ============================================================
-
-def calculate_scale_pos_weight(
-    y_train: pd.Series,
-):
-
-    negative_count = (
-        y_train == 0
-    ).sum()
-
-    positive_count = (
-        y_train == 1
-    ).sum()
-
-    if positive_count == 0:
-
-        raise ValueError(
-            "No positive samples in "
-            "training data."
-        )
-
-    return (
-        negative_count
-        /
-        positive_count
-    )
-
-
-# ============================================================
-# TRAIN XGBOOST
+# TRAIN MODEL
 # ============================================================
 
 def train_model(
@@ -425,24 +307,46 @@ def train_model(
     y_train,
 ):
 
-    scale_pos_weight = (
-        calculate_scale_pos_weight(
-            y_train
-        )
+    positive_count = int(
+        (y_train == 1).sum()
     )
 
-    print(
-        f"Scale positive weight: "
-        f"{scale_pos_weight:.4f}"
+    negative_count = int(
+        (y_train == 0).sum()
     )
+
+    if positive_count == 0:
+
+        raise ValueError(
+            "Training data contains no "
+            "positive samples."
+        )
+
+    if negative_count == 0:
+
+        raise ValueError(
+            "Training data contains no "
+            "negative samples."
+        )
 
     params = dict(
         XGB_PARAMS
     )
 
+    # --------------------------------------------------------
+    # Class imbalance adjustment.
+    #
+    # This is statistically motivated by the observed
+    # training class frequencies rather than a hardcoded
+    # fraud weight.
+    # --------------------------------------------------------
+
     params[
         "scale_pos_weight"
-    ] = scale_pos_weight
+    ] = (
+        negative_count
+        / positive_count
+    )
 
     model = XGBClassifier(
         **params
@@ -457,7 +361,7 @@ def train_model(
 
 
 # ============================================================
-# EVALUATE
+# EVALUATION
 # ============================================================
 
 def evaluate_model(
@@ -466,184 +370,271 @@ def evaluate_model(
     y_test,
 ):
 
-    probabilities = (
+    probability = (
         model.predict_proba(
             X_test
         )[:, 1]
     )
 
-    predictions = (
-        probabilities >= 0.5
+    prediction = (
+        probability >= 0.5
     ).astype(int)
 
-    accuracy = accuracy_score(
-        y_test,
-        predictions,
-    )
+    metrics = {}
 
-    precision = precision_score(
-        y_test,
-        predictions,
-        zero_division=0,
-    )
-
-    recall = recall_score(
-        y_test,
-        predictions,
-        zero_division=0,
-    )
-
-    f1 = f1_score(
-        y_test,
-        predictions,
-        zero_division=0,
-    )
-
-    try:
-
-        roc_auc = roc_auc_score(
+    metrics["accuracy"] = (
+        accuracy_score(
             y_test,
-            probabilities,
+            prediction,
+        )
+    )
+
+    metrics["precision"] = (
+        precision_score(
+            y_test,
+            prediction,
+            zero_division=0,
+        )
+    )
+
+    metrics["recall"] = (
+        recall_score(
+            y_test,
+            prediction,
+            zero_division=0,
+        )
+    )
+
+    metrics["f1"] = (
+        f1_score(
+            y_test,
+            prediction,
+            zero_division=0,
+        )
+    )
+
+    # ROC-AUC requires both classes in y_test.
+    if len(
+        np.unique(y_test)
+    ) == 2:
+
+        metrics["roc_auc"] = (
+            roc_auc_score(
+                y_test,
+                probability,
+            )
         )
 
-    except ValueError:
+    else:
 
-        roc_auc = float("nan")
-
-    cm = confusion_matrix(
-        y_test,
-        predictions,
-    )
-
-    report = classification_report(
-        y_test,
-        predictions,
-        zero_division=0,
-    )
-
-    metrics = {
-
-        "accuracy":
-            accuracy,
-
-        "precision":
-            precision,
-
-        "recall":
-            recall,
-
-        "f1":
-            f1,
-
-        "roc_auc":
-            roc_auc,
-    }
+        metrics["roc_auc"] = np.nan
 
     return (
+        probability,
+        prediction,
         metrics,
-        cm,
-        report,
-        probabilities,
-        predictions,
     )
 
 
 # ============================================================
-# SAVE MODEL
+# MAIN
 # ============================================================
 
-def save_model(
-    model,
-    feature_columns,
-):
+def main():
+
+    print("=" * 60)
+    print("XGBOOST RISK MODEL")
+    print("=" * 60)
+
+    MODEL_OUTPUT_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     ARTIFACT_DIR.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    artifact = {
+    # --------------------------------------------------------
+    # Load
+    # --------------------------------------------------------
 
-        "model":
-            model,
+    df = load_training_data()
 
-        "feature_columns":
-            feature_columns,
+    # --------------------------------------------------------
+    # Prepare
+    # --------------------------------------------------------
 
-        "target_column":
-            TARGET_COLUMN,
+    X, y = prepare_features(
+        df
+    )
 
-        "model_type":
-            "XGBClassifier",
+    wallet_ids = (
+        df["wallet_id"]
+        .astype(str)
+        .values
+    )
 
-        "random_state":
-            RANDOM_STATE,
-    }
+    # --------------------------------------------------------
+    # Train/test split
+    # --------------------------------------------------------
 
-    joblib.dump(
-        artifact,
-        MODEL_FILE,
+    (
+        X_train,
+        X_test,
+        y_train,
+        y_test,
+        train_wallet_ids,
+        test_wallet_ids,
+    ) = train_test_split(
+        X,
+        y,
+        wallet_ids,
+        test_size=TEST_SIZE,
+        random_state=RANDOM_STATE,
+        stratify=y,
     )
 
     print(
-        f"\nModel saved:\n"
-        f"{MODEL_FILE}"
+        f"Total wallets: "
+        f"{len(df)}"
     )
 
-
-# ============================================================
-# SAVE PREDICTIONS
-# ============================================================
-
-def save_predictions(
-    X_test,
-    y_test,
-    probabilities,
-    predictions,
-):
-
-    MODEL_OUTPUT_DIR.mkdir(
-        parents=True,
-        exist_ok=True,
+    print(
+        f"Features: "
+        f"{X.shape[1]}"
     )
 
-    output = pd.DataFrame(
+    print(
+        f"Training wallets: "
+        f"{len(X_train)}"
+    )
+
+    print(
+        f"Test wallets: "
+        f"{len(X_test)}"
+    )
+
+    # --------------------------------------------------------
+    # Train
+    # --------------------------------------------------------
+
+    model = train_model(
+        X_train,
+        y_train,
+    )
+
+    # --------------------------------------------------------
+    # Evaluate on untouched test set
+    # --------------------------------------------------------
+
+    (
+        test_probability,
+        test_prediction,
+        metrics,
+    ) = evaluate_model(
+        model,
+        X_test,
+        y_test,
+    )
+
+    # --------------------------------------------------------
+    # Test predictions
+    # --------------------------------------------------------
+
+    test_output = pd.DataFrame(
         {
+            "wallet_id":
+                test_wallet_ids,
+
             "actual_label":
                 y_test.values,
 
             "risk_probability":
-                probabilities,
+                test_probability,
 
             "risk_prediction":
-                predictions,
+                test_prediction,
         }
     )
 
-    output.to_csv(
-        PREDICTIONS_FILE,
+    test_output.to_csv(
+        TEST_PREDICTIONS_FILE,
         index=False,
     )
 
-    print(
-        f"Predictions saved:\n"
-        f"{PREDICTIONS_FILE}"
+    # --------------------------------------------------------
+    # All-wallet inference
+    #
+    # This is the downstream production/batch output.
+    # --------------------------------------------------------
+
+    all_probability = (
+        model.predict_proba(
+            X
+        )[:, 1]
     )
 
+    all_prediction = (
+        all_probability >= 0.5
+    ).astype(int)
 
-# ============================================================
-# SAVE METRICS
-# ============================================================
+    all_output = pd.DataFrame(
+        {
+            "wallet_id":
+                wallet_ids,
 
-def save_metrics(
-    metrics,
-    confusion,
-    report,
-):
+            "risk_probability":
+                all_probability,
 
-    MODEL_OUTPUT_DIR.mkdir(
-        parents=True,
-        exist_ok=True,
+            "risk_prediction":
+                all_prediction,
+        }
+    )
+
+    all_output.to_csv(
+        ALL_PREDICTIONS_FILE,
+        index=False,
+    )
+
+    # --------------------------------------------------------
+    # Save model
+    # --------------------------------------------------------
+
+    joblib.dump(
+        {
+            "model":
+                model,
+
+            "feature_columns":
+                X.columns.tolist(),
+
+            "target_column":
+                TARGET_COLUMN,
+
+            "model_type":
+                "XGBClassifier",
+
+            "random_state":
+                RANDOM_STATE,
+        },
+        MODEL_FILE,
+    )
+
+    # --------------------------------------------------------
+    # Save metrics
+    # --------------------------------------------------------
+
+    confusion = confusion_matrix(
+        y_test,
+        test_prediction,
+    )
+
+    report = classification_report(
+        y_test,
+        test_prediction,
+        zero_division=0,
     )
 
     with open(
@@ -661,31 +652,25 @@ def save_metrics(
             + "\n\n"
         )
 
-        file.write(
-            "Metrics\n"
-        )
-
-        file.write(
-            "-" * 60
-            + "\n"
-        )
-
         for name, value in (
             metrics.items()
         ):
 
-            file.write(
-                f"{name}: "
-                f"{value:.6f}\n"
-            )
+            if pd.isna(value):
+
+                file.write(
+                    f"{name}: N/A\n"
+                )
+
+            else:
+
+                file.write(
+                    f"{name}: "
+                    f"{value:.6f}\n"
+                )
 
         file.write(
             "\nConfusion Matrix\n"
-        )
-
-        file.write(
-            "-" * 60
-            + "\n"
         )
 
         file.write(
@@ -698,164 +683,56 @@ def save_metrics(
         )
 
         file.write(
-            "-" * 60
-            + "\n"
-        )
-
-        file.write(
             report
         )
 
-    print(
-        f"Metrics saved:\n"
-        f"{METRICS_FILE}"
-    )
-
-
-# ============================================================
-# MAIN
-# ============================================================
-
-def main():
+    # --------------------------------------------------------
+    # Console summary
+    # --------------------------------------------------------
 
     print("\n")
-    print("#" * 60)
-    print("# XGBOOST RISK MODEL")
-    print("#" * 60)
-
-    # --------------------------------------------------------
-    # 1. Load final risk features
-    # --------------------------------------------------------
-
-    df = load_training_data()
-
-    # --------------------------------------------------------
-    # 2. Prepare target
-    # --------------------------------------------------------
-
-    y = prepare_target(
-        df
-    )
-
-    print(
-        "\nTarget distribution:"
-    )
-
-    print(
-        y.value_counts()
-        .sort_index()
-        .to_string()
-    )
-
-    # --------------------------------------------------------
-    # 3. Prepare model features
-    # --------------------------------------------------------
-
-    X, feature_columns = (
-        prepare_features(df)
-    )
-
-    # --------------------------------------------------------
-    # 4. Train/test split
-    # --------------------------------------------------------
-
-    (
-        X_train,
-        X_test,
-        y_train,
-        y_test,
-    ) = split_data(
-        X,
-        y,
-    )
-
-    # --------------------------------------------------------
-    # 5. Train XGBoost
-    # --------------------------------------------------------
-
-    model = train_model(
-        X_train,
-        y_train,
-    )
-
-    # --------------------------------------------------------
-    # 6. Evaluate
-    # --------------------------------------------------------
-
-    (
-        metrics,
-        confusion,
-        report,
-        probabilities,
-        predictions,
-    ) = evaluate_model(
-        model,
-        X_test,
-        y_test,
-    )
-
-    print("\n" + "=" * 60)
-    print("MODEL PERFORMANCE")
+    print("=" * 60)
+    print("XGBOOST COMPLETE")
     print("=" * 60)
 
     for name, value in (
         metrics.items()
     ):
 
-        print(
-            f"{name:10s}: "
-            f"{value:.4f}"
-        )
+        if pd.isna(value):
+
+            print(
+                f"{name}: N/A"
+            )
+
+        else:
+
+            print(
+                f"{name}: "
+                f"{value:.4f}"
+            )
 
     print(
-        "\nConfusion Matrix:"
+        f"\nModel:\n"
+        f"{MODEL_FILE}"
     )
 
     print(
-        confusion
+        f"\nAll-wallet predictions:\n"
+        f"{ALL_PREDICTIONS_FILE}"
     )
 
     print(
-        "\nClassification Report:"
+        f"\nTest predictions:\n"
+        f"{TEST_PREDICTIONS_FILE}"
     )
 
     print(
-        report
+        f"\nMetrics:\n"
+        f"{METRICS_FILE}"
     )
 
-    # --------------------------------------------------------
-    # 7. Save model
-    # --------------------------------------------------------
-
-    save_model(
-        model,
-        feature_columns,
-    )
-
-    # --------------------------------------------------------
-    # 8. Save predictions
-    # --------------------------------------------------------
-
-    save_predictions(
-        X_test=X_test,
-        y_test=y_test,
-        probabilities=probabilities,
-        predictions=predictions,
-    )
-
-    # --------------------------------------------------------
-    # 9. Save metrics
-    # --------------------------------------------------------
-
-    save_metrics(
-        metrics,
-        confusion,
-        report,
-    )
-
-    print("\n" + "#" * 60)
-    print("# XGBOOST RISK MODEL COMPLETE")
-    print("#" * 60)
+    return model
 
 
 if __name__ == "__main__":

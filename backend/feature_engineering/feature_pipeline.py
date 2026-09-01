@@ -1,23 +1,26 @@
 from pathlib import Path
+import ast
+import json
 
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
 import joblib
+import pandas as pd
 
-from transaction_features import (
-    build_transaction_features
+from sklearn.preprocessing import StandardScaler
+
+from backend.feature_engineering.transaction_features import (
+    build_transaction_features,
 )
 
-from temporal_features import (
-    build_temporal_features
+from backend.feature_engineering.temporal_features import (
+    build_temporal_features,
 )
 
-from network_features import (
-    build_network_features
+from backend.feature_engineering.network_features import (
+    build_network_features,
 )
 
-from correlation_features import (
-    build_correlation_features
+from backend.feature_engineering.correlation_features import (
+    build_correlation_features,
 )
 
 
@@ -26,154 +29,132 @@ from correlation_features import (
 # ============================================================
 
 PROJECT_ROOT = (
-    Path(__file__)
-    .resolve()
-    .parents[2]
+    Path(__file__).resolve().parents[2]
 )
 
-DATASET_DIR = PROJECT_ROOT / "data"
+DATASET_DIR = (
+    PROJECT_ROOT / "data"
+)
 
 RAW_DIR = (
-    DATASET_DIR /
-    "raw"
-)
-
-GEOIP_DIR = (
-    DATASET_DIR /
-    "geoip"
+    DATASET_DIR / "raw"
 )
 
 OUTPUT_DIR = (
-    PROJECT_ROOT /
-    "outputs" /
-    "features"
+    PROJECT_ROOT
+    / "outputs"
+    / "features"
 )
 
-MODEL_DIR = (
-    PROJECT_ROOT /
-    "backend" /
-    "models" /
-    "artifacts"
+ARTIFACT_DIR = (
+    PROJECT_ROOT
+    / "backend"
+    / "models"
+    / "artifacts"
 )
 
 OUTPUT_DIR.mkdir(
     parents=True,
-    exist_ok=True
+    exist_ok=True,
 )
 
-MODEL_DIR.mkdir(
+ARTIFACT_DIR.mkdir(
     parents=True,
-    exist_ok=True
+    exist_ok=True,
 )
 
 
 # ============================================================
-# LOAD DATA
+# LOAD RAW DATA
 # ============================================================
 
 def load_raw_data():
 
-    wallets = pd.read_csv(
-        RAW_DIR /
-        "wallets.csv"
-    )
+    files = {
+        "wallets":
+            RAW_DIR / "wallets.csv",
 
-    transactions = pd.read_csv(
-        RAW_DIR /
-        "transactions.csv"
-    )
+        "transactions":
+            RAW_DIR / "transactions.csv",
 
-    transaction_inputs = pd.read_csv(
-        RAW_DIR /
-        "transaction_inputs.csv"
-    )
-
-    transaction_outputs = pd.read_csv(
-        RAW_DIR /
-        "transaction_outputs.csv"
-    )
-
-    network_observations = pd.read_csv(
-        RAW_DIR /
-        "network_observations.csv"
-    )
-
-    ip_metadata = pd.read_csv(
-        RAW_DIR /
-        "ip_metadata.csv"
-    )
-
-    return {
-        "wallets": wallets,
-        "transactions": transactions,
         "transaction_inputs":
-            transaction_inputs,
+            RAW_DIR / "transaction_inputs.csv",
+
         "transaction_outputs":
-            transaction_outputs,
+            RAW_DIR / "transaction_outputs.csv",
+
         "network_observations":
-            network_observations,
+            RAW_DIR / "network_observations.csv",
+
         "ip_metadata":
-            ip_metadata,
+            RAW_DIR / "ip_metadata.csv",
     }
+
+    data = {}
+
+    for name, path in files.items():
+
+        if not path.exists():
+
+            raise FileNotFoundError(
+                f"Required dataset file not found:\n"
+                f"{path}"
+            )
+
+        data[name] = pd.read_csv(path)
+
+    return data
 
 
 # ============================================================
-# PARSE LIST COLUMNS
+# LIST PARSER
 # ============================================================
 
 def parse_list_column(
-    value
+    value,
 ):
 
-    if pd.isna(value):
+    if value is None:
+        return []
 
+    if pd.isna(value):
         return []
 
     if isinstance(value, list):
-
         return value
 
-    value = str(value).strip()
+    text = str(value).strip()
 
-    if not value:
-
+    if not text:
         return []
-
-    # Handle CSV representation:
-    # ['W0001', 'W0002']
 
     try:
 
-        import ast
-
         parsed = ast.literal_eval(
-            value
+            text
         )
 
-        if isinstance(
-            parsed,
-            list
-        ):
-
+        if isinstance(parsed, list):
             return parsed
 
     except (
         ValueError,
-        SyntaxError
+        SyntaxError,
     ):
-
         pass
 
     return []
 
 
+# ============================================================
+# PREPARE TRANSACTIONS
+# ============================================================
+
 def prepare_transactions(
-    transactions
+    transactions,
 ):
 
-    transactions = (
-        transactions.copy()
-    )
+    transactions = transactions.copy()
 
     list_columns = [
         "input_addresses",
@@ -188,15 +169,14 @@ def prepare_transactions(
 
             transactions[column] = (
                 transactions[column]
-                .apply(
-                    parse_list_column
-                )
+                .apply(parse_list_column)
             )
 
     transactions["timestamp"] = (
         pd.to_datetime(
             transactions["timestamp"],
-            errors="coerce"
+            errors="coerce",
+            utc=True,
         )
     )
 
@@ -213,7 +193,7 @@ def prepare_transactions(
             transactions[column] = (
                 pd.to_numeric(
                     transactions[column],
-                    errors="coerce"
+                    errors="coerce",
                 )
             )
 
@@ -221,48 +201,51 @@ def prepare_transactions(
 
 
 # ============================================================
-# FEATURE ENGINEERING
+# MAIN FEATURE PIPELINE
 # ============================================================
 
-def build_features():
+def main():
 
-    print(
-        "Loading raw dataset..."
-    )
+    print("=" * 60)
+    print("FEATURE ENGINEERING")
+    print("=" * 60)
 
     data = load_raw_data()
 
-    wallets = data["wallets"]
+    wallets = data["wallets"].copy()
 
-    transactions = (
-        prepare_transactions(
-            data["transactions"]
-        )
+    wallets["wallet_id"] = (
+        wallets["wallet_id"]
+        .astype(str)
+    )
+
+    transactions = prepare_transactions(
+        data["transactions"]
     )
 
     transaction_inputs = (
         data["transaction_inputs"]
+        .copy()
     )
 
     transaction_outputs = (
         data["transaction_outputs"]
+        .copy()
     )
 
     network_observations = (
         data["network_observations"]
+        .copy()
     )
 
     ip_metadata = (
         data["ip_metadata"]
+        .copy()
     )
 
     # --------------------------------------------------------
-    # Transaction features
+    # Transaction
     # --------------------------------------------------------
-
-    print(
-        "Building transaction features..."
-    )
 
     transaction_features = (
         build_transaction_features(
@@ -274,12 +257,8 @@ def build_features():
     )
 
     # --------------------------------------------------------
-    # Temporal features
+    # Temporal
     # --------------------------------------------------------
-
-    print(
-        "Building temporal features..."
-    )
 
     temporal_features = (
         build_temporal_features(
@@ -289,12 +268,8 @@ def build_features():
     )
 
     # --------------------------------------------------------
-    # Network features
+    # Network / GeoIP
     # --------------------------------------------------------
-
-    print(
-        "Building network features..."
-    )
 
     network_features = (
         build_network_features(
@@ -304,12 +279,8 @@ def build_features():
     )
 
     # --------------------------------------------------------
-    # Correlation features
+    # Correlation
     # --------------------------------------------------------
-
-    print(
-        "Building correlation features..."
-    )
 
     correlation_features = (
         build_correlation_features(
@@ -319,158 +290,142 @@ def build_features():
     )
 
     # --------------------------------------------------------
-    # Start with every wallet
+    # Base wallet table
     # --------------------------------------------------------
 
-    result = pd.DataFrame({
-        "wallet_id":
-            wallets["wallet_id"]
-            .astype(str)
-    })
+    result = pd.DataFrame(
+        {
+            "wallet_id":
+                wallets["wallet_id"]
+        }
+    )
+
+    result["wallet_id"] = (
+        result["wallet_id"]
+        .astype(str)
+    )
 
     # --------------------------------------------------------
-    # Merge all feature groups
+    # Merge feature groups
     # --------------------------------------------------------
 
-    feature_frames = [
+    for frame in [
         transaction_features,
         temporal_features,
         network_features,
         correlation_features,
-    ]
+    ]:
 
-    for frame in feature_frames:
-
-        if frame.empty:
-
+        if frame is None or frame.empty:
             continue
+
+        frame = frame.copy()
 
         frame["wallet_id"] = (
             frame["wallet_id"]
             .astype(str)
         )
 
+        if frame["wallet_id"].duplicated().any():
+
+            raise ValueError(
+                "Feature group contains duplicate "
+                "wallet_id values."
+            )
+
         result = result.merge(
             frame,
             on="wallet_id",
             how="left",
-            suffixes=(
-                "",
-                "_duplicate"
-            ),
+            validate="one_to_one",
         )
 
     # --------------------------------------------------------
-    # Remove accidental duplicate columns
+    # Numeric conversion
     # --------------------------------------------------------
 
-    duplicate_columns = [
-        col
-        for col in result.columns
-        if col.endswith(
-            "_duplicate"
-        )
+    feature_columns = [
+        column
+        for column in result.columns
+        if column != "wallet_id"
     ]
 
-    if duplicate_columns:
+    for column in feature_columns:
 
-        result = result.drop(
-            columns=duplicate_columns
+        result[column] = pd.to_numeric(
+            result[column],
+            errors="coerce",
         )
 
-    # --------------------------------------------------------
-    # Fill numeric missing values
-    # --------------------------------------------------------
-
-    numeric_columns = [
-        col
-        for col in result.columns
-        if col != "wallet_id"
-    ]
-
-    result[numeric_columns] = (
-        result[numeric_columns]
-        .apply(
-            pd.to_numeric,
-            errors="coerce"
-        )
+    result[feature_columns] = (
+        result[feature_columns]
         .replace(
             [float("inf"), float("-inf")],
-            0
+            pd.NA,
         )
-        .fillna(0)
+        .fillna(0.0)
     )
 
     # --------------------------------------------------------
-    # Save unscaled features
+    # Remove constant features
+    # --------------------------------------------------------
+
+    feature_columns = [
+        column
+        for column in feature_columns
+        if result[column].nunique() > 1
+    ]
+
+    result = result[
+        ["wallet_id"]
+        + feature_columns
+    ]
+
+    # --------------------------------------------------------
+    # Save raw engineered features
     # --------------------------------------------------------
 
     feature_file = (
-        OUTPUT_DIR /
-        "wallet_features.csv"
+        OUTPUT_DIR
+        / "wallet_features.csv"
     )
 
     result.to_csv(
         feature_file,
-        index=False
-    )
-
-    print(
-        f"Saved: {feature_file}"
+        index=False,
     )
 
     # --------------------------------------------------------
-    # ML feature matrix
-    # --------------------------------------------------------
-
-    ml_features = result[
-        [
-            col
-            for col in result.columns
-            if col != "wallet_id"
-        ]
-    ].copy()
-
-    # Feature names are preserved
-    feature_names = (
-        ml_features.columns.tolist()
-    )
-
-    # --------------------------------------------------------
-    # Scaling
+    # Scaled features
     # --------------------------------------------------------
 
     scaler = StandardScaler()
 
     scaled_values = (
         scaler.fit_transform(
-            ml_features
+            result[feature_columns]
         )
     )
 
     scaled = pd.DataFrame(
         scaled_values,
-        columns=feature_names
+        columns=feature_columns,
     )
 
     scaled.insert(
         0,
         "wallet_id",
-        result["wallet_id"]
+        result["wallet_id"],
     )
 
     scaled_file = (
-        OUTPUT_DIR /
-        "wallet_features_scaled.csv"
+        OUTPUT_DIR
+        / "wallet_features_scaled.csv"
     )
 
     scaled.to_csv(
         scaled_file,
-        index=False
-    )
-
-    print(
-        f"Saved: {scaled_file}"
+        index=False,
     )
 
     # --------------------------------------------------------
@@ -478,49 +433,58 @@ def build_features():
     # --------------------------------------------------------
 
     scaler_file = (
-        MODEL_DIR /
-        "feature_scaler.pkl"
+        ARTIFACT_DIR
+        / "feature_scaler.pkl"
     )
 
     joblib.dump(
         scaler,
-        scaler_file
-    )
-
-    print(
-        f"Saved: {scaler_file}"
+        scaler_file,
     )
 
     # --------------------------------------------------------
     # Save feature names
     # --------------------------------------------------------
 
-    import json
-
     feature_names_file = (
-        OUTPUT_DIR /
-        "feature_names.json"
+        OUTPUT_DIR
+        / "feature_names.json"
     )
 
     with open(
         feature_names_file,
         "w",
-        encoding="utf-8"
-    ) as f:
+        encoding="utf-8",
+    ) as file:
 
         json.dump(
-            feature_names,
-            f,
-            indent=2
+            feature_columns,
+            file,
+            indent=2,
         )
 
     print(
-        f"Saved: {feature_names_file}"
+        f"Wallets: {len(result)}"
+    )
+
+    print(
+        f"Features: {len(feature_columns)}"
+    )
+
+    print(
+        f"Saved: {feature_file}"
+    )
+
+    print(
+        f"Saved: {scaled_file}"
+    )
+
+    print(
+        f"Saved: {scaler_file}"
     )
 
     return result
 
 
 if __name__ == "__main__":
-
-    build_features()
+    main()

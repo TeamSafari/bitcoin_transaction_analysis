@@ -11,8 +11,8 @@ PROJECT_ROOT = (
     Path(__file__).resolve().parents[1]
 )
 
-# Allow backend packages to be imported correctly.
 if str(PROJECT_ROOT) not in sys.path:
+
     sys.path.insert(
         0,
         str(PROJECT_ROOT),
@@ -20,7 +20,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 
 # ============================================================
-# PIPELINE MODULES
+# PIPELINE IMPORTS
 # ============================================================
 
 from backend.feature_engineering.feature_pipeline import (
@@ -44,7 +44,7 @@ from backend.models.autoencoder import (
 )
 
 from backend.risk.run_deterministic import (
-    main as run_deterministic_risk,
+    main as run_deterministic,
 )
 
 from backend.risk.risk_fusion import (
@@ -55,60 +55,58 @@ from backend.models.risk_model import (
     main as run_risk_model,
 )
 
-from backend.explainability.shap_engine import (
-    main as run_shap,
-)
 
-from backend.alerts.alert_service import (
-    main as run_alert_service,
-)
+# ============================================================
+# OPTIONAL LATER STAGES
+# ============================================================
+
+# These remain intentionally disabled until the complete
+# upstream production chain has been verified.
+#
+# from backend.explainability.shap_engine import ...
+# from backend.alerts.alert_service import ...
 
 
 # ============================================================
-# PIPELINE RUNNER
+# STAGE RUNNER
 # ============================================================
 
 def run_stage(
-    stage_name,
-    stage_function,
+    name,
+    function,
 ):
 
     print("\n")
     print("=" * 70)
-    print(f"STARTING: {stage_name}")
+    print(f"STARTING: {name}")
     print("=" * 70)
 
     try:
 
-        stage_function()
+        function()
 
     except Exception as error:
 
         print("\n")
         print("#" * 70)
-        print(f"PIPELINE FAILED: {stage_name}")
+        print(f"FAILED: {name}")
         print("#" * 70)
 
         print(
-            f"\nError:\n{error}"
-        )
-
-        print(
-            "\nTraceback:"
+            f"\n{error}"
         )
 
         traceback.print_exc()
 
         raise
 
-    print("\n")
-    print("=" * 70)
-    print(f"COMPLETED: {stage_name}")
-    print("=" * 70)
+    print(
+        f"\nCOMPLETED: {name}"
+    )
 
 
 # ============================================================
-# MAIN PIPELINE
+# MAIN
 # ============================================================
 
 def main():
@@ -118,131 +116,90 @@ def main():
     print("# BITCOIN TRANSACTION RISK PIPELINE")
     print("#" * 70)
 
-    print(
-        f"\nProject root:\n"
-        f"{PROJECT_ROOT}"
-    )
-
-    # ========================================================
-    # 1. FEATURE ENGINEERING
-    # ========================================================
+    # --------------------------------------------------------
+    # 1. Feature engineering
+    # --------------------------------------------------------
 
     run_stage(
         "FEATURE ENGINEERING",
         run_feature_engineering,
     )
 
-    # ========================================================
-    # 2. NETWORKX GRAPH ENGINE
-    # ========================================================
+    # --------------------------------------------------------
+    # 2. NetworkX
+    # --------------------------------------------------------
 
     run_stage(
         "NETWORKX GRAPH ENGINE",
         run_graph_engine,
     )
 
-    # ========================================================
-    # 3. GRAPHSAGE EMBEDDINGS
-    # ========================================================
+    # --------------------------------------------------------
+    # 3. GraphSAGE
+    # --------------------------------------------------------
 
     run_stage(
-        "GRAPHSAGE EMBEDDINGS",
+        "GRAPHSAGE",
         run_graphsage,
     )
 
-    # ========================================================
-    # 4. ISOLATION FOREST
-    # ========================================================
+    # --------------------------------------------------------
+    # 4. Isolation Forest
+    # --------------------------------------------------------
 
     run_stage(
         "ISOLATION FOREST",
         run_isolation_forest,
     )
 
-    # ========================================================
-    # 5. AUTOENCODER
-    # ========================================================
+    # --------------------------------------------------------
+    # 5. Autoencoder
+    # --------------------------------------------------------
 
     run_stage(
         "AUTOENCODER",
         run_autoencoder,
     )
 
-    # ========================================================
-    # 6. DETERMINISTIC STATISTICAL RISK
-    # ========================================================
+    # --------------------------------------------------------
+    # 6. Deterministic statistical risk
+    # --------------------------------------------------------
 
     run_stage(
         "DETERMINISTIC STATISTICAL RISK",
-        run_deterministic_risk,
+        run_deterministic,
     )
 
-    # ========================================================
-    # 7. RISK FEATURE FUSION
-    # ========================================================
+    # --------------------------------------------------------
+    # 7. Risk feature fusion
+    # --------------------------------------------------------
 
     run_stage(
         "RISK FEATURE FUSION",
         run_risk_fusion,
     )
 
-    # ========================================================
-    # 8. XGBOOST RISK MODEL
-    # ========================================================
+    # --------------------------------------------------------
+    # 8. XGBoost
+    # --------------------------------------------------------
 
     run_stage(
         "XGBOOST RISK MODEL",
         run_risk_model,
     )
 
-    # ========================================================
-    # 9. SHAP EXPLAINABILITY
-    # ========================================================
-
-    run_stage(
-        "SHAP EXPLAINABILITY",
-        run_shap,
-    )
-
-    # ========================================================
-    # 10. ALERT SERVICE
-    # ========================================================
-
-    run_stage(
-        "ALERT SERVICE",
-        run_alert_service,
-    )
-
-    # ========================================================
-    # COMPLETE
-    # ========================================================
-
     print("\n")
     print("#" * 70)
-    print("# PIPELINE COMPLETED SUCCESSFULLY")
+    print("# CORE PIPELINE COMPLETED")
     print("#" * 70)
 
     print(
-        "\nFinal alert outputs:"
+        "\nNext stages:"
     )
 
     print(
-        PROJECT_ROOT
-        / "outputs"
-        / "alerts"
+        "SHAP → Alert Service → AI Agent"
     )
-
-    print(
-        "\nFinal explainability outputs:"
-    )
-
-    print(
-        PROJECT_ROOT
-        / "outputs"
-        / "explainability"
-    )
-
-    print("\n")
 
 
 # ============================================================
