@@ -1,8 +1,32 @@
 import React, { useState } from 'react';
-import { ShieldAlert, ShieldCheck, Activity, Network, Target, ChevronRight } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, Activity, Network, Target, ChevronRight, Loader } from 'lucide-react';
 
-export default function Sidebar({ selectedNode, onTrace }) {
-  const [activeTab, setActiveTab] = useState('SAGE'); 
+export default function Sidebar({ selectedNode, onTrace, jobId }) {
+  const [activeTab, setActiveTab] = useState('SAGE');
+  const [shapData, setShapData] = React.useState(null);
+  const [isLoadingShap, setIsLoadingShap] = React.useState(false);
+
+  React.useEffect(() => {
+     if (selectedNode) {
+         // If we fallback to mock static data stored in the node itself
+         if (selectedNode.shap_features) {
+             setShapData(selectedNode.shap_features);
+             return;
+         }
+         
+         // Otherwise fetch from the API dynamically when tab opens
+         if (activeTab === 'EXPLAIN' && jobId) {
+             setIsLoadingShap(true);
+             // We use a dynamic import to avoid circular dependencies in this simple rewrite
+             import('../utils/apiService').then(({ fetchExplainability }) => {
+                 fetchExplainability(jobId, selectedNode.id)
+                    .then(res => setShapData(res.top_risk_factors || res.top_risk_factors))
+                    .catch(err => console.error(err))
+                    .finally(() => setIsLoadingShap(false));
+             });
+         }
+     }
+  }, [selectedNode, activeTab, jobId]); 
 
   if (!selectedNode) {
     return (
@@ -54,9 +78,13 @@ export default function Sidebar({ selectedNode, onTrace }) {
           <h3><Target size={16} style={{ display: 'inline', marginRight: '8px' }} /> Explainability (XAI)</h3>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '16px' }}>Dynamic SHAP feature contributions for this specific wallet.</p>
           
-          {selectedNode.shap_features && selectedNode.shap_features.length > 0 ? (
+          {isLoadingShap ? (
+             <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+                 <Loader className="spinner" size={24} color="#3b82f6" />
+             </div>
+          ) : shapData && shapData.length > 0 ? (
              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
-                {selectedNode.shap_features.slice(0, 3).map((f, idx) => (
+                {shapData.slice(0, 3).map((f, idx) => (
                     <div key={idx} style={{ background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '8px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                            <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>{f.feature}</span>
@@ -69,7 +97,7 @@ export default function Sidebar({ selectedNode, onTrace }) {
                 ))}
              </div>
           ) : (
-            <p style={{ fontSize: '0.9rem' }}>No SHAP data available for this node.</p>
+             <p style={{ fontSize: '0.9rem' }}>No SHAP data available for this node.</p>
           )}
         </div>
       )}

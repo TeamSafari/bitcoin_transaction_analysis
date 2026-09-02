@@ -123,3 +123,54 @@ h3 { font-size: 1rem; margin-bottom: 8px; color: #e2e8f0; }
 .btn:hover { background: #2563eb; transform: translateY(-1px); }
 .btn.trace { background: var(--accent-warning); color: #000; }
 .btn.trace:hover { background: #d97706; }
+
+/* API Integration Styles */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.upload-btn:hover:not(:disabled) {
+    background-color: #2563eb;
+}
+
+.upload-btn:disabled {
+    background-color: #475569;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.loading-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    color: #e2e8f0;
+}
+
+.spinner {
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
