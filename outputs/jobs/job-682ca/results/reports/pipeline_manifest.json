@@ -1,0 +1,30 @@
+{
+  "status": "success",
+  "execution_time_seconds": 28.49,
+  "dataset": {
+    "wallet_count": 500,
+    "transaction_count": 10019,
+    "edge_count": 10975
+  },
+  "features": {
+    "count": 55,
+    "scaled": true
+  },
+  "graphsage": {
+    "embedding_dimension": 32
+  },
+  "models_evaluated": {
+    "graphsage": true,
+    "isolation_forest": true,
+    "autoencoder": true,
+    "deterministic_engine": true,
+    "risk_model": true,
+    "shap": true
+  },
+  "alerts_summary": {
+    "total_wallets": 500,
+    "high_risk_count": 226,
+    "medium_risk_count": 144,
+    "low_risk_count": 130
+  }
+}

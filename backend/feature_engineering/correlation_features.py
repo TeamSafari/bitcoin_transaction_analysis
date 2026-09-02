@@ -1,408 +1,106 @@
+"""
+Correlation Features
+
+Relates network observations to transaction activity.
+Generates:
+- avg_network_tx_time_difference
+- min_network_tx_time_difference
+- observations_per_tx
+- rapid_hop_count
+"""
+
+from __future__ import annotations
+
 import numpy as np
 import pandas as pd
 
 
-def entropy(series: pd.Series) -> float:
-
-    counts = series.value_counts(
-        normalize=True
-    )
-
-    return float(
-        -(counts * np.log2(counts)).sum()
-    )
-
-
-def build_network_features(
+def build_correlation_features(
+    transactions: pd.DataFrame,
     network_observations: pd.DataFrame,
-    ip_metadata: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Build wallet-level network and GeoIP features.
+    Build correlation features linking network observations and transactions per wallet.
     """
-
-    network = (
-        network_observations.copy()
-    )
-
-    metadata = (
-        ip_metadata.copy()
-    )
-
-    network["wallet_context"] = (
-        network["wallet_context"]
-        .astype(str)
-    )
-
-    network["src_ip"] = (
-        network["src_ip"]
-        .astype(str)
-    )
-
-    network["dst_ip"] = (
-        network["dst_ip"]
-        .astype(str)
-    )
-
-    # ---------------------------------------------------------
-    # Basic network statistics
-    # ---------------------------------------------------------
-
-    grouped = (
-        network.groupby("wallet_context")
-        .agg(
-            observation_count=(
-                "observation_id",
-                "nunique"
-            ),
-            unique_src_ips=(
-                "src_ip",
-                "nunique"
-            ),
-            unique_dst_ips=(
-                "dst_ip",
-                "nunique"
-            ),
-            unique_src_ports=(
-                "src_port",
-                "nunique"
-            ),
-            unique_dst_ports=(
-                "dst_port",
-                "nunique"
-            ),
-            mean_latency_ms=(
-                "latency_ms",
-                "mean"
-            ),
-            median_latency_ms=(
-                "latency_ms",
-                "median"
-            ),
-            std_latency_ms=(
-                "latency_ms",
-                "std"
-            ),
-            total_bytes_sent=(
-                "bytes_sent",
-                "sum"
-            ),
-            total_bytes_received=(
-                "bytes_received",
-                "sum"
-            ),
-        )
-    )
-
-    grouped["inbound_ratio"] = (
-        grouped["total_bytes_received"]
-        /
-        (
-            grouped["total_bytes_sent"]
-            +
-            grouped["total_bytes_received"]
-        ).replace(0, 1)
-    )
-
-    grouped["outbound_ratio"] = (
-        grouped["total_bytes_sent"]
-        /
-        (
-            grouped["total_bytes_sent"]
-            +
-            grouped["total_bytes_received"]
-        ).replace(0, 1)
-    )
-
-    # ---------------------------------------------------------
-    # GeoIP enrichment
-    # ---------------------------------------------------------
-
-    src_geo = metadata[
-        [
-            "ip",
-            "country_code",
-            "asn",
-            "network_type",
-        ]
-    ].copy()
-
-    src_geo = src_geo.rename(
-        columns={
-            "ip": "src_ip",
-            "country_code": "src_country_code",
-            "asn": "src_asn",
-            "network_type":
-                "src_network_type",
-        }
-    )
-
-    dst_geo = metadata[
-        [
-            "ip",
-            "country_code",
-            "asn",
-            "network_type",
-        ]
-    ].copy()
-
-    dst_geo = dst_geo.rename(
-        columns={
-            "ip": "dst_ip",
-            "country_code": "dst_country_code",
-            "asn": "dst_asn",
-            "network_type":
-                "dst_network_type",
-        }
-    )
-
-    enriched = (
-        network
-        .merge(
-            src_geo,
-            on="src_ip",
-            how="left",
-        )
-        .merge(
-            dst_geo,
-            on="dst_ip",
-            how="left",
-        )
-    )
-
-    # ---------------------------------------------------------
-    # Wallet-level GeoIP metrics
-    # ---------------------------------------------------------
-
-    geo_rows = []
-
-    for wallet, group in (
-        enriched.groupby(
-            "wallet_context"
-        )
-    ):
-
-        countries = pd.concat(
-            [
-                group[
-                    "src_country_code"
-                ],
-                group[
-                    "dst_country_code"
-                ],
+    if network_observations is None or network_observations.empty:
+        return pd.DataFrame(
+            columns=[
+                "wallet_id",
+                "avg_network_tx_time_difference",
+                "min_network_tx_time_difference",
+                "observations_per_tx",
+                "rapid_hop_count",
             ]
-        ).dropna()
+        )
 
-        asns = pd.concat(
-            [
-                group["src_asn"],
-                group["dst_asn"],
-            ]
-        ).dropna()
+    net = network_observations.copy()
+    tx = transactions.copy()
 
-        network_types = pd.concat(
-            [
-                group[
-                    "src_network_type"
-                ],
-                group[
-                    "dst_network_type"
-                ],
-            ]
-        ).dropna()
+    net["wallet_context"] = net["wallet_context"].astype(str)
+    net["txid"] = net["txid"].astype(str)
 
-        geo_rows.append(
+    # Parse timestamps
+    net["net_time"] = pd.to_datetime(net["timestamp"], errors="coerce", utc=True)
+    tx["tx_time"] = pd.to_datetime(tx["timestamp"], errors="coerce", utc=True)
+    tx["txid"] = tx["txid"].astype(str)
+
+    # Merge network observations with transactions on txid
+    merged = net.merge(
+        tx[["txid", "tx_time"]],
+        on="txid",
+        how="inner",
+    )
+
+    if not merged.empty:
+        merged["time_diff_sec"] = (
+            (merged["net_time"] - merged["tx_time"]).dt.total_seconds().abs()
+        )
+    else:
+        merged["time_diff_sec"] = 0.0
+
+    # Derive rapid hop threshold statistically from positive time differences
+    pos_diffs = merged.loc[merged["time_diff_sec"] > 0, "time_diff_sec"]
+    if len(pos_diffs) > 10:
+        rapid_threshold = float(pos_diffs.quantile(0.10))
+    else:
+        rapid_threshold = 2.0  # default 2 seconds
+
+    # Group by wallet_context
+    records = []
+    for wallet_id, group in net.groupby("wallet_context"):
+        obs_count = len(group)
+        unique_txids = group["txid"].nunique()
+        obs_per_tx = float(obs_count / max(1, unique_txids))
+
+        wallet_merged = merged[merged["wallet_context"] == wallet_id]
+        if not wallet_merged.empty and wallet_merged["time_diff_sec"].notna().any():
+            avg_diff = float(wallet_merged["time_diff_sec"].mean())
+            min_diff = float(wallet_merged["time_diff_sec"].min())
+            rapid_hops = int((wallet_merged["time_diff_sec"] <= rapid_threshold).sum())
+        else:
+            avg_diff = 0.0
+            min_diff = 0.0
+            rapid_hops = 0
+
+        records.append(
             {
-                "wallet_id": wallet,
-
-                "unique_countries":
-                    countries.nunique(),
-
-                "unique_asns":
-                    asns.nunique(),
-
-                "unique_network_types":
-                    network_types.nunique(),
-
-                "country_entropy":
-                    entropy(countries)
-                    if len(countries)
-                    else 0.0,
-
-                "asn_entropy":
-                    entropy(asns)
-                    if len(asns)
-                    else 0.0,
+                "wallet_id": wallet_id,
+                "avg_network_tx_time_difference": avg_diff,
+                "min_network_tx_time_difference": min_diff,
+                "observations_per_tx": obs_per_tx,
+                "rapid_hop_count": rapid_hops,
             }
         )
 
-    geo_features = pd.DataFrame(
-        geo_rows
-    )
-
-    if not geo_features.empty:
-
-        geo_features = (
-            geo_features
-            .set_index("wallet_id")
+    if not records:
+        return pd.DataFrame(
+            columns=[
+                "wallet_id",
+                "avg_network_tx_time_difference",
+                "min_network_tx_time_difference",
+                "observations_per_tx",
+                "rapid_hop_count",
+            ]
         )
 
-    # ---------------------------------------------------------
-    # Shared IP / ASN features
-    # ---------------------------------------------------------
-
-    ip_wallets = pd.concat(
-        [
-            network[
-                [
-                    "wallet_context",
-                    "src_ip",
-                ]
-            ].rename(
-                columns={
-                    "src_ip": "ip"
-                }
-            ),
-
-            network[
-                [
-                    "wallet_context",
-                    "dst_ip",
-                ]
-            ].rename(
-                columns={
-                    "dst_ip": "ip"
-                }
-            ),
-        ]
-    )
-
-    ip_counts = (
-        ip_wallets
-        .groupby("ip")[
-            "wallet_context"
-        ]
-        .nunique()
-    )
-
-    shared_ip = (
-        ip_wallets
-        .assign(
-            shared=lambda x:
-                x["ip"].map(ip_counts)
-        )
-        .groupby(
-            "wallet_context"
-        )["shared"]
-        .max()
-        .rename(
-            "shared_ip_wallet_count"
-        )
-    )
-
-    # ASN → wallet count
-    asn_rows = enriched[
-        [
-            "wallet_context",
-            "src_asn",
-            "dst_asn",
-        ]
-    ]
-
-    asn_long = pd.concat(
-        [
-            asn_rows[
-                [
-                    "wallet_context",
-                    "src_asn",
-                ]
-            ].rename(
-                columns={
-                    "src_asn": "asn"
-                }
-            ),
-
-            asn_rows[
-                [
-                    "wallet_context",
-                    "dst_asn",
-                ]
-            ].rename(
-                columns={
-                    "dst_asn": "asn"
-                }
-            ),
-        ]
-    ).dropna()
-
-    asn_counts = (
-        asn_long
-        .groupby("asn")[
-            "wallet_context"
-        ]
-        .nunique()
-    )
-
-    shared_asn = (
-        asn_long
-        .assign(
-            shared=lambda x:
-                x["asn"].map(asn_counts)
-        )
-        .groupby(
-            "wallet_context"
-        )["shared"]
-        .max()
-        .rename(
-            "shared_asn_wallet_count"
-        )
-    )
-
-    # ---------------------------------------------------------
-    # Final merge
-    # ---------------------------------------------------------
-
-    result = grouped.copy()
-
-    if not geo_features.empty:
-
-        result = result.join(
-            geo_features,
-            how="left",
-        )
-
-    result = result.join(
-        shared_ip,
-        how="left",
-    )
-
-    result = result.join(
-        shared_asn,
-        how="left",
-    )
-
-    result = result.reset_index()
-
-    result = result.rename(
-        columns={
-            "wallet_context":
-                "wallet_id"
-        }
-    )
-
-    numeric_columns = [
-        col
-        for col in result.columns
-        if col != "wallet_id"
-    ]
-
-    result[numeric_columns] = (
-        result[numeric_columns]
-        .replace(
-            [np.inf, -np.inf],
-            0
-        )
-        .fillna(0)
-    )
-
-    return result
+    return pd.DataFrame(records)
