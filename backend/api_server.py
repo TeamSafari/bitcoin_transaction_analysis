@@ -221,7 +221,10 @@ class DataLoader:
 
     @property
     def risk_predictions(self) -> pd.DataFrame:
-        df = self.load_csv("models/risk_model_predictions.csv")
+        try:
+            df = self.load_csv("models/risk_predictions.csv")
+        except FileNotFoundError:
+            df = self.load_csv("models/risk_model_predictions.csv")
         return df.set_index("wallet_id")
 
     @property
