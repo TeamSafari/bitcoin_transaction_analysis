@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import GraphView from './components/GraphView';
 import Sidebar from './components/Sidebar';
@@ -10,6 +10,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
+  
+  const graphRef = useRef();
 
   useEffect(() => {
     async function initData() {
@@ -30,6 +32,12 @@ export default function App() {
     setActiveSearch(searchInput);
   };
 
+  const triggerTrace = (nodeId) => {
+    if (graphRef.current) {
+        graphRef.current.traceFunds(nodeId);
+    }
+  };
+
   return (
     <div className="app-container">
       <div className="top-bar">
@@ -46,10 +54,10 @@ export default function App() {
 
       <div className="graph-container">
         {loading ? <div style={{ padding: '80px', color: '#94a3b8' }}>Loading graph data...</div> : 
-          <GraphView elements={elements} onNodeSelect={setSelectedNode} searchQuery={activeSearch} />}
+          <GraphView ref={graphRef} elements={elements} onNodeSelect={setSelectedNode} searchQuery={activeSearch} />}
       </div>
       
-      <Sidebar selectedNode={selectedNode} />
+      <Sidebar selectedNode={selectedNode} onTrace={triggerTrace} />
     </div>
   );
 }

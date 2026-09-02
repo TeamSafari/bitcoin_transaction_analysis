@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import cytoscape from 'cytoscape';
 
-export default function GraphView({ elements, onNodeSelect, searchQuery }) {
+const GraphView = forwardRef(({ elements, onNodeSelect, searchQuery }, ref) => {
   const containerRef = useRef(null);
   const cyRef = useRef(null);
 
@@ -40,8 +40,8 @@ export default function GraphView({ elements, onNodeSelect, searchQuery }) {
         },
         { selector: '.dimmed', style: { 'display': 'none' } }, 
         { selector: '.dimmed-soft', style: { 'opacity': 0.1 } }, 
-        { selector: '.highlighted', style: { 'opacity': 1, 'border-width': 4, 'border-color': '#fff' } },
-        { selector: '.incoming-edge', style: { 'opacity': 1, 'line-color': '#f59e0b', 'target-arrow-color': '#f59e0b', 'width': 3, 'z-index': 10 } }
+        { selector: '.highlighted', style: { 'opacity': 1, 'border-width': 4, 'border-color': '#fff', 'z-index': 99 } },
+        { selector: '.incoming-edge', style: { 'opacity': 1, 'line-color': '#f59e0b', 'target-arrow-color': '#f59e0b', 'width': 4, 'z-index': 10 } }
       ],
       layout: { name: 'cose', idealEdgeLength: 100, nodeOverlap: 20, refresh: 20, fit: true, padding: 30, randomize: false, componentSpacing: 100 }
     });
@@ -69,7 +69,6 @@ export default function GraphView({ elements, onNodeSelect, searchQuery }) {
     return () => cy.destroy();
   }, [elements]);
 
-  // Contextual Sub-Graph Logic
   useEffect(() => {
     if (!cyRef.current) return;
     const cy = cyRef.current;
@@ -82,15 +81,11 @@ export default function GraphView({ elements, onNodeSelect, searchQuery }) {
 
     const node = cy.getElementById(searchQuery);
     if (node.length) {
-        // Find 2-hop neighborhood
         const hop1 = node.closedNeighborhood();
         const hop2 = hop1.closedNeighborhood();
-        
         cy.elements().addClass('dimmed');
         hop2.removeClass('dimmed');
         cy.fit(hop2, 50);
-        
-        // Select it
         onNodeSelect(node.data());
         cy.elements().removeClass('dimmed-soft highlighted incoming-edge');
         cy.elements().not('.dimmed').addClass('dimmed-soft');
@@ -98,22 +93,44 @@ export default function GraphView({ elements, onNodeSelect, searchQuery }) {
     }
   }, [searchQuery]);
 
-  window.traceFunds = async () => {
-    if (!cyRef.current) return;
-    const cy = cyRef.current;
-    
-    // Mocking traceability
-    const edges = cy.edges().toArray().slice(0, 5); 
-    cy.elements().addClass('dimmed-soft');
-    
-    for (let edge of edges) {
-      edge.removeClass('dimmed-soft').addClass('incoming-edge');
-      edge.source().removeClass('dimmed-soft').addClass('highlighted');
-      edge.target().removeClass('dimmed-soft').addClass('highlighted');
-      await edge.animate({ style: { 'line-color': '#ef4444', 'width': 6 } }, { duration: 400 }).promise();
-      await new Promise(r => setTimeout(r, 200));
+  // Expose intelligent trace function to parent
+  useImperativeHandle(ref, () => ({
+    traceFunds: async (startNodeId) => {
+      if (!cyRef.current || !startNodeId) return;
+      const cy = cyRef.current;
+      
+      let currentNode = cy.getElementById(startNodeId);
+      if (!currentNode.length) return;
+
+      cy.elements().addClass('dimmed-soft');
+      currentNode.removeClass('dimmed-soft').addClass('highlighted');
+
+      // Smart traversal: follow the highest weight edge for up to 5 hops
+      let currentPath = [];
+      for (let i = 0; i < 5; i++) {
+         const outEdges = currentNode.outgoers('edge');
+         if (outEdges.length === 0) break;
+         
+         // Find edge with highest transaction weight
+         let maxEdge = outEdges[0];
+         outEdges.forEach(e => {
+            if (e.data('weight') > maxEdge.data('weight')) maxEdge = e;
+         });
+
+         currentPath.push(maxEdge);
+         currentNode = maxEdge.target();
+      }
+
+      for (let edge of currentPath) {
+        edge.removeClass('dimmed-soft').addClass('incoming-edge');
+        edge.target().removeClass('dimmed-soft').addClass('highlighted');
+        await edge.animate({ style: { 'line-color': '#ef4444', 'width': 6 } }, { duration: 400 }).promise();
+        await new Promise(r => setTimeout(r, 200));
+      }
     }
-  };
+  }));
 
   return <div ref={containerRef} className="cy-wrapper" />;
-}
+});
+
+export default GraphView;

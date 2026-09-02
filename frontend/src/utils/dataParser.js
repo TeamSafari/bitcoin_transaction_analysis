@@ -16,13 +16,28 @@ const loadCSV = async (filePath) => {
 export const loadGraphData = async () => {
   const edgesRaw = await loadCSV('/data/graph_edges.csv');
   const featuresRaw = await loadCSV('/data/graph_features.csv');
-  const scoresRaw = await loadCSV('/data/isolation_forest_scores.csv');
+  
+  // New Final Model Outputs
+  const riskRaw = await loadCSV('/data/risk_model_predictions.csv');
+  const shapRaw = await loadCSV('/data/top_feature_contributions.csv');
 
   const elements = [];
   const nodesMap = new Map();
 
+  // Group SHAP features by wallet
+  const shapMap = new Map();
+  shapRaw.forEach(row => {
+      if (!shapMap.has(row.wallet_id)) shapMap.set(row.wallet_id, []);
+      shapMap.get(row.wallet_id).push(row);
+  });
+
   featuresRaw.forEach(f => {
-    const scoreRow = scoresRaw.find(s => s.wallet_id === f.wallet_id) || {};
+    const riskRow = riskRaw.find(s => s.wallet_id === f.wallet_id) || {};
+    const shapFeatures = shapMap.get(f.wallet_id) || [];
+    
+    // Sort SHAP features by rank
+    shapFeatures.sort((a, b) => a.rank - b.rank);
+
     const node = {
       data: {
         id: f.wallet_id,
@@ -30,8 +45,10 @@ export const loadGraphData = async () => {
         degree: f.degree || 0,
         pagerank: f.pagerank || 0,
         community_id: f.community_id,
-        anomaly_score: scoreRow.isolation_forest_anomaly_score || 0,
-        is_anomaly: scoreRow.isolation_forest_flag === 1
+        // Final Fusion Risk Model properties
+        risk_probability: riskRow.risk_probability || 0,
+        is_anomaly: riskRow.risk_prediction === 1,
+        shap_features: shapFeatures
       }
     };
     nodesMap.set(f.wallet_id, node);
