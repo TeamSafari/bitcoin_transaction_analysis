@@ -21,17 +21,35 @@ export default function App() {
   const fileInputRef = useRef();
 
   const handleFileUpload = async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+      
+      // We need exactly 6 files
+      const fileMap = {};
+      const requiredKeys = ['wallets', 'transactions', 'transaction_inputs', 'transaction_outputs', 'network_observations', 'ip_metadata'];
+      
+      files.forEach(f => {
+          const name = f.name.toLowerCase();
+          requiredKeys.forEach(k => {
+              if (name.includes(k)) fileMap[k] = f;
+          });
+      });
+      
+      const missing = requiredKeys.filter(k => !fileMap[k]);
+      if (missing.length > 0) {
+          alert(`Please select all 6 required CSV files at once.\nMissing: ${missing.join(', ')}`);
+          e.target.value = ''; // reset input
+          return;
+      }
       
       try {
           setIsUploading(true);
           setElements([]); // clear old graph
           setSelectedNode(null);
-          setStatusMessage('Uploading CSV data to backend...');
+          setStatusMessage('Uploading 6 CSV files to backend...');
           
           // 1. Upload to backend API
-          const uploadRes = await uploadCSV(file);
+          const uploadRes = await uploadCSV(fileMap);
           const currentJobId = uploadRes.job_id;
           setJobId(currentJobId);
           
@@ -100,6 +118,7 @@ export default function App() {
             <input 
                 type="file" 
                 accept=".csv" 
+                multiple 
                 ref={fileInputRef}
                 style={{ display: 'none' }}
                 onChange={handleFileUpload}

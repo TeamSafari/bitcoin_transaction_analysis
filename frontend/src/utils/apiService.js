@@ -7,18 +7,23 @@ const API_BASE_URL = 'http://localhost:8000/api/v1';
 // If true, it simulates the backend API calls but returns the local CSV data.
 const USE_MOCK_API = false; 
 
-export const uploadCSV = async (file) => {
+export const uploadCSV = async (fileMap) => {
     if (USE_MOCK_API) {
         return new Promise(resolve => setTimeout(() => resolve({ job_id: 'mock-123', status: 'processing' }), 1000));
     }
 
     const formData = new FormData();
-    formData.append('file', file);
+    for (const [key, file] of Object.entries(fileMap)) {
+        formData.append(key, file);
+    }
     const response = await fetch(`${API_BASE_URL}/jobs/upload`, {
         method: 'POST',
         body: formData
     });
-    if (!response.ok) throw new Error('Upload failed');
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Upload failed: ${text}`);
+    }
     return response.json();
 };
 
