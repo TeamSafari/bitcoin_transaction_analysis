@@ -435,15 +435,20 @@ class Orchestrator:
             scaler = joblib.load(scaler_file)
 
         # Merge features
-        merged = wallet_features.merge(graph_features, on="wallet_id", how="left")
-        merged = merged.merge(embeddings, on="wallet_id", how="left")
+        merged = wallet_features.merge(graph_features, on="wallet_id", how="left", suffixes=("", "_graph"))
+        merged = merged.merge(embeddings, on="wallet_id", how="left", suffixes=("", "_graphsage"))
 
         wallet_ids = merged["wallet_id"].astype(str).tolist()
 
         if feature_cols:
             for col in feature_cols:
                 if col not in merged.columns:
-                    merged[col] = 0.0
+                    if col.endswith("_graph") and col[:-6] in merged.columns:
+                        merged[col] = merged[col[:-6]]
+                    elif col.endswith("_graphsage") and col[:-10] in merged.columns:
+                        merged[col] = merged[col[:-10]]
+                    else:
+                        merged[col] = 0.0
             x_data = merged[feature_cols].values
         else:
             num_cols = [c for c in merged.columns if c != "wallet_id" and c != "community_id"]
@@ -459,21 +464,24 @@ class Orchestrator:
 
         # Calculate scores
         try:
-            decision_scores = model.decision_function(x_data)
-            # Invert: lower decision function means higher anomaly
-            anomaly_scores = 1.0 - (
-                (decision_scores - decision_scores.min())
-                / (decision_scores.max() - decision_scores.min() + 1e-9)
-            )
+            raw_anomaly_scores = -model.decision_function(x_data)
+            minimum = raw_anomaly_scores.min()
+            maximum = raw_anomaly_scores.max()
+            if maximum > minimum:
+                anomaly_scores = (raw_anomaly_scores - minimum) / (maximum - minimum + 1e-9)
+            else:
+                anomaly_scores = np.zeros(len(raw_anomaly_scores))
             predictions = model.predict(x_data)
             flags = (predictions == -1).astype(int)
         except Exception:
+            raw_anomaly_scores = np.zeros(len(wallet_ids))
             anomaly_scores = np.zeros(len(wallet_ids))
             flags = np.zeros(len(wallet_ids), dtype=int)
 
         scores_df = pd.DataFrame(
             {
                 "wallet_id": wallet_ids,
+                "isolation_forest_raw_score": raw_anomaly_scores,
                 "isolation_forest_anomaly_score": anomaly_scores,
                 "isolation_forest_flag": flags,
             }

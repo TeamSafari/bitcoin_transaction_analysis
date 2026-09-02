@@ -144,7 +144,11 @@ class Edge(BaseModel):
 class Node(BaseModel):
     id: str
     risk_score: float = 0.5
-    wallet_features: Dict[str, float] = {}
+    is_anomaly: bool = False
+    degree: int = 0
+    pagerank: float = 0.0
+    community_id: str = "0"
+    wallet_features: Dict[str, Any] = {}
 
 class GraphOverviewResponse(BaseModel):
     nodes: List[Node]
@@ -189,6 +193,11 @@ class DataLoader:
     @property
     def graph_edges(self) -> pd.DataFrame:
         return self.load_csv("graphs/graph_edges.csv")
+
+    @property
+    def graph_features(self) -> pd.DataFrame:
+        df = self.load_csv("graphs/graph_features.csv")
+        return df.set_index("wallet_id")
 
     @property
     def wallet_features(self) -> pd.DataFrame:
@@ -544,18 +553,48 @@ class GraphExplorer:
         except Exception:
             preds = pd.DataFrame()
         try:
-            features = self.loader.wallet_features
+            graph_feats = self.loader.graph_features
         except Exception:
-            features = pd.DataFrame()
+            graph_feats = pd.DataFrame()
+        try:
+            wallet_feats = self.loader.wallet_features
+        except Exception:
+            wallet_feats = pd.DataFrame()
 
         for nid in nodes:
             risk_score = float(preds.loc[nid]["risk_probability"]) if (nid in preds.index) else 0.5
-            feat_dict = (
-                features.loc[nid][["pagerank", "betweenness_centrality", "out_degree", "in_degree"]].to_dict()
-                if (nid in features.index and "pagerank" in features.columns)
-                else {}
+            is_anomaly = bool(preds.loc[nid].get("risk_prediction", 0) == 1 or risk_score >= 0.7) if (nid in preds.index) else False
+
+            feat_dict = {}
+            if nid in graph_feats.index:
+                g_row = graph_feats.loc[nid]
+                feat_dict["degree"] = int(g_row.get("degree", 0))
+                feat_dict["in_degree"] = int(g_row.get("in_degree", 0))
+                feat_dict["out_degree"] = int(g_row.get("out_degree", 0))
+                feat_dict["pagerank"] = float(g_row.get("pagerank", 0.0))
+                feat_dict["betweenness_centrality"] = float(g_row.get("betweenness_centrality", 0.0))
+                feat_dict["clustering_coefficient"] = float(g_row.get("clustering_coefficient", 0.0))
+                feat_dict["community_id"] = str(g_row.get("community_id", "0"))
+
+            if nid in wallet_feats.index:
+                w_row = wallet_feats.loc[nid]
+                feat_dict["tx_count"] = int(w_row.get("tx_count", 0))
+                feat_dict["total_sent_sats"] = float(w_row.get("total_sent_sats", 0.0))
+                feat_dict["total_received_sats"] = float(w_row.get("total_received_sats", 0.0))
+                feat_dict["fan_out"] = float(w_row.get("fan_out", 0.0))
+                feat_dict["fan_in"] = float(w_row.get("fan_in", 0.0))
+
+            node_list.append(
+                Node(
+                    id=nid,
+                    risk_score=round(risk_score, 4),
+                    is_anomaly=is_anomaly,
+                    degree=feat_dict.get("degree", 0),
+                    pagerank=feat_dict.get("pagerank", 0.0),
+                    community_id=feat_dict.get("community_id", "0"),
+                    wallet_features=feat_dict,
+                )
             )
-            node_list.append(Node(id=nid, risk_score=risk_score, wallet_features=feat_dict))
 
         edge_list = []
         for src, tgts in self.graph.items():
@@ -587,36 +626,88 @@ class GraphExplorer:
             "ego_hops": hops,
         }
 
-    def get_overview_graph(self, max_nodes: int = 150) -> Dict[str, Any]:
-        """Returns macroscopic overview network prioritized by anomaly risk."""
+    def get_overview_graph(self, max_nodes: int = 500) -> Dict[str, Any]:
+        """Returns macroscopic overview network prioritized by anomaly risk.
+        
+        Strategy: Select top wallets by risk, then include ALL edges where
+        BOTH endpoints are in the selected set. This guarantees every node
+        has its visible degree consistent with the edges shown.
+        """
         try:
             preds = self.loader.risk_predictions
             edges_df = self.loader.graph_edges
-            features = self.loader.wallet_features
-        except Exception as e:
+        except Exception:
             return {"nodes": [], "edges": [], "total_nodes": 0, "total_edges": 0}
 
+        try:
+            graph_feats = self.loader.graph_features
+        except Exception:
+            graph_feats = pd.DataFrame()
+        try:
+            wallet_feats = self.loader.wallet_features
+        except Exception:
+            wallet_feats = pd.DataFrame()
+
+        # Select top wallets by risk probability
         sorted_wallets = preds.sort_values("risk_probability", ascending=False).index.tolist()
-        top_wallets = set(str(w) for w in sorted_wallets[:max_nodes])
+        selected_wallets = set(str(w) for w in sorted_wallets[:max_nodes])
 
-        mask = edges_df["source_wallet_id"].astype(str).isin(top_wallets) | edges_df["target_wallet_id"].astype(
-            str
-        ).isin(top_wallets)
-        filtered_edges = edges_df[mask].head(600)
+        # Include ALL edges where BOTH source AND target are in selected set
+        src_col = edges_df["source_wallet_id"].astype(str)
+        tgt_col = edges_df["target_wallet_id"].astype(str)
+        both_mask = src_col.isin(selected_wallets) & tgt_col.isin(selected_wallets)
+        filtered_edges = edges_df[both_mask]
 
-        all_nodes = set(filtered_edges["source_wallet_id"].astype(str)).union(
+        # Final node set = only wallets that appear in at least one edge
+        # (nodes with zero connections in the subgraph are excluded for visual clarity)
+        connected_nodes = set(filtered_edges["source_wallet_id"].astype(str)).union(
             set(filtered_edges["target_wallet_id"].astype(str))
-        ).union(top_wallets)
+        )
+        # Also include top risk wallets even if isolated (they matter for forensics)
+        all_nodes = connected_nodes.union(selected_wallets)
 
         nodes = []
         for nid in all_nodes:
             risk_score = float(preds.loc[nid]["risk_probability"]) if (nid in preds.index) else 0.5
-            feat_dict = (
-                features.loc[nid][["pagerank", "out_degree", "in_degree"]].to_dict()
-                if (nid in features.index and "pagerank" in features.columns)
-                else {}
+            is_anomaly = bool(preds.loc[nid].get("risk_prediction", 0) == 1 or risk_score >= 0.7) if (nid in preds.index) else False
+
+            feat_dict = {}
+            if nid in graph_feats.index:
+                g_row = graph_feats.loc[nid]
+                feat_dict["degree"] = int(g_row.get("degree", 0))
+                feat_dict["in_degree"] = int(g_row.get("in_degree", 0))
+                feat_dict["out_degree"] = int(g_row.get("out_degree", 0))
+                feat_dict["pagerank"] = float(g_row.get("pagerank", 0.0))
+                feat_dict["betweenness_centrality"] = float(g_row.get("betweenness_centrality", 0.0))
+                feat_dict["clustering_coefficient"] = float(g_row.get("clustering_coefficient", 0.0))
+                feat_dict["community_id"] = str(g_row.get("community_id", "0"))
+
+            if nid in wallet_feats.index:
+                w_row = wallet_feats.loc[nid]
+                feat_dict["tx_count"] = int(w_row.get("tx_count", 0))
+                feat_dict["total_sent_sats"] = float(w_row.get("total_sent_sats", 0.0))
+                feat_dict["total_received_sats"] = float(w_row.get("total_received_sats", 0.0))
+                feat_dict["fan_out"] = float(w_row.get("fan_out", 0.0))
+                feat_dict["fan_in"] = float(w_row.get("fan_in", 0.0))
+
+            # Compute visible degree within this subgraph
+            vis_out = int((filtered_edges["source_wallet_id"].astype(str) == nid).sum())
+            vis_in = int((filtered_edges["target_wallet_id"].astype(str) == nid).sum())
+            feat_dict["visible_degree"] = vis_in + vis_out
+            feat_dict["visible_in_degree"] = vis_in
+            feat_dict["visible_out_degree"] = vis_out
+
+            nodes.append(
+                Node(
+                    id=nid,
+                    risk_score=round(risk_score, 4),
+                    is_anomaly=is_anomaly,
+                    degree=feat_dict.get("degree", 0),
+                    pagerank=feat_dict.get("pagerank", 0.0),
+                    community_id=feat_dict.get("community_id", "0"),
+                    wallet_features=feat_dict,
+                )
             )
-            nodes.append(Node(id=nid, risk_score=risk_score, wallet_features=feat_dict))
 
         edges = []
         for _, row in filtered_edges.iterrows():

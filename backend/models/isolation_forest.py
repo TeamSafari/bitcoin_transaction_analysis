@@ -351,7 +351,7 @@ def train_isolation_forest(
 
     model = IsolationForest(
         n_estimators=N_ESTIMATORS,
-        contamination="auto",
+        contamination=0.08,
         random_state=RANDOM_STATE,
         n_jobs=-1,
     )
