@@ -1,6 +1,10 @@
 # API Architecture: Asynchronous ML Pipeline
 
-This document outlines the API endpoints required to transition from a static demo to a dynamic application that processes any uploaded Bitcoin CSV file. Because processing a bulk CSV (Feature Engineering, GraphSAGE, Isolation Forest, LightGBM, SHAP) is computationally expensive, the architecture uses a Job/Task-based asynchronous workflow.
+This document describes the live REST API implemented in `backend/api/`.
+
+**Run the server:** `cd backend && python main.py` (with venv activated).
+
+Because the full forensic pipeline is computationally expensive, uploads use a job-based async workflow (`backend/api/worker.py` → `backend/pipeline/orchestrator.py`).
 
 ## 1. Ingestion & Processing Pipeline
 These endpoints handle the file upload and asynchronous ML processing.
@@ -51,12 +55,34 @@ When the frontend sends the CSV file to this endpoint, the backend does **not** 
 
 Because the pipeline takes time, this endpoint kicks off a **background task** and immediately returns a `job_id` to the frontend.
 
-Here is exactly what happens in the backend memory after that endpoint is hit:
-1. **Step 1: Ingestion.** The backend reads the uploaded CSV into a Pandas DataFrame.
-2. **Step 2: Feature Engineering.** The backend automatically passes that DataFrame into your existing scripts (`temporal_features.py`, `network_features.py`, etc.) to calculate PageRank, degrees, and transaction frequencies.
-3. **Step 3: GraphSAGE.** The backend constructs the NetworkX graph and runs the pre-trained `graphsage.pt` model to generate embeddings.
-4. **Step 4: ML Pipeline.** The backend feeds the features and embeddings into your pre-trained `isolation_forest.pkl` and `risk_model.pkl` to generate the final predictions.
-5. **Step 5: SHAP Engine.** Finally, it runs `shap_engine.py` on the flagged anomalies to calculate the feature importances.
-6. **Step 6: Storage.** The backend saves all these final outputs into the database (or output folders) tagged with that specific `job_id`.
+After upload, `backend/api/worker.py` runs the orchestrator (`backend/pipeline/orchestrator.py`) in a background task:
 
-While the backend is busy running Steps 1 through 6, the frontend is continuously pinging the second endpoint: `GET /api/v1/jobs/{job_id}/status` to display the progress to the user.
+1. **Data Ingestion** — validate and normalize raw CSVs
+2. **Identity Resolution** — link wallets to entities and IP fingerprints
+3. **Graph Construction** — build wallet graph edges and structural features
+4. **Feature Engineering** — transaction, temporal, network, and correlation features
+5. **Rule Engine** — deterministic statistical risk scoring
+6. **GNN Engine** — GraphSAGE embeddings via `graphsage.pt`
+7. **Anomaly Detectors** — Isolation Forest and Autoencoder
+8. **Feature Fusion + Risk Model** — XGBoost inference via `risk_model.pkl`
+9. **Fusion & Scoring** — correlation-adjusted multi-detector fusion
+10. **Explainability** — SHAP feature contributions
+11. **Alert Generation** — ranked alert queue per wallet
+
+All artifacts are written to `outputs/jobs/{job_id}/results/`; job metadata is stored in SQLite (`outputs/jobs.db`).
+
+While the pipeline runs, the frontend polls `GET /api/v1/jobs/{job_id}/status` for progress and stage names.
+
+## Global routes (optional `job_id` query param)
+
+| Endpoint | Method |
+| :--- | :---: |
+| `/api/v1/health` | GET |
+| `/api/v1/jobs` | GET |
+| `/api/v1/jobs/{job_id}` | GET |
+| `/api/v1/jobs/{job_id}/manifest` | GET |
+| `/api/v1/graph/overview?job_id=` | GET |
+| `/api/v1/graph/wallet/{wallet_id}?job_id=` | GET |
+| `/api/v1/alerts?job_id=` | GET |
+| `/api/v1/explainability/wallet/{wallet_id}?job_id=` | GET |
+| `/api/v1/patterns/trace/{wallet_id}?job_id=` | GET |

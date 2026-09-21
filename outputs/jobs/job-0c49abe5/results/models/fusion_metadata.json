@@ -1,0 +1,40 @@
+{
+  "engine_type": "pure_statistical",
+  "normalization": "empirical_percentile_rank",
+  "correlation_method": "absolute_spearman",
+  "weighting_method": "inverse_redundancy",
+  "aggregation": "correlation_adjusted_weighted_mean",
+  "risk_band_method": "empirical_quartile_rank",
+  "source_weights": {
+    "risk_model": 0.24358192351779617,
+    "isolation_forest": 0.2364740120599519,
+    "autoencoder": 0.28655464503493266,
+    "deterministic": 0.23338941938731925
+  },
+  "correlation_matrix": {
+    "risk_model": {
+      "risk_model": 1.0,
+      "isolation_forest": 0.278718,
+      "autoencoder": 0.239513,
+      "deterministic": 0.34749
+    },
+    "isolation_forest": {
+      "risk_model": 0.278718,
+      "isolation_forest": 1.0,
+      "autoencoder": 0.031318,
+      "deterministic": 0.67188
+    },
+    "autoencoder": {
+      "risk_model": 0.239513,
+      "isolation_forest": 0.031318,
+      "autoencoder": 1.0,
+      "deterministic": 0.015173
+    },
+    "deterministic": {
+      "risk_model": 0.34749,
+      "isolation_forest": 0.67188,
+      "autoencoder": 0.015173,
+      "deterministic": 1.0
+    }
+  }
+}

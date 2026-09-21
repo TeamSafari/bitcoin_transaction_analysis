@@ -1,0 +1,107 @@
+{
+  "status": "success",
+  "execution_time_seconds": 98.68,
+  "stages_completed": [
+    "Data Ingestion",
+    "Identity Resolution",
+    "Graph Construction",
+    "Feature Engineering",
+    "Rule Engine",
+    "GNN Engine",
+    "Isolation Forest",
+    "Autoencoder",
+    "Feature Fusion",
+    "Risk Model Inference",
+    "Fusion & Scoring",
+    "Explainability",
+    "Alert Generation"
+  ],
+  "dataset": {
+    "wallet_count": 500,
+    "transaction_count": 10019,
+    "edge_count": 10975
+  },
+  "identity": {
+    "wallets_linked_to_entities": 500,
+    "duplicate_entity_flags": 500,
+    "output_file": "C:\\Users\\athar\\Desktop\\bitcoin_transaction_analysis\\outputs\\jobs\\job-0c49abe5\\results\\identity\\identity_resolution.csv"
+  },
+  "features": {
+    "feature_count": 58
+  },
+  "fusion": {
+    "source_weights": {
+      "risk_model": 0.24358192351779617,
+      "isolation_forest": 0.2364740120599519,
+      "autoencoder": 0.28655464503493266,
+      "deterministic": 0.23338941938731925
+    },
+    "hold_count": 37,
+    "review_count": 210
+  },
+  "alerts_summary": {
+    "total_alerts": 500,
+    "high_risk_count": 225,
+    "medium_risk_count": 142,
+    "low_risk_count": 133
+  },
+  "stage_reports": {
+    "Data Ingestion": {
+      "wallet_count": 500,
+      "transaction_count": 10019,
+      "network_observation_count": 15603,
+      "ip_count": 100,
+      "has_entities": false,
+      "has_wallet_entity_links": false
+    },
+    "Identity Resolution": {
+      "wallets_linked_to_entities": 500,
+      "duplicate_entity_flags": 500,
+      "output_file": "C:\\Users\\athar\\Desktop\\bitcoin_transaction_analysis\\outputs\\jobs\\job-0c49abe5\\results\\identity\\identity_resolution.csv"
+    },
+    "Graph Construction": {
+      "edge_count": 10975,
+      "node_count": 500
+    },
+    "Feature Engineering": {
+      "feature_count": 58
+    },
+    "Rule Engine": {
+      "deterministic_flagged_wallets": 215
+    },
+    "GNN Engine": {
+      "embedding_dimension": 32
+    },
+    "Isolation Forest": {
+      "anomaly_flags": 500
+    },
+    "Autoencoder": {
+      "mean_reconstruction_error": 1.9874707759169536e+16
+    },
+    "Feature Fusion": {
+      "fused_feature_count": 109
+    },
+    "Risk Model Inference": {
+      "mean_risk_probability": 0.6992586851119995
+    },
+    "Fusion & Scoring": {
+      "source_weights": {
+        "risk_model": 0.24358192351779617,
+        "isolation_forest": 0.2364740120599519,
+        "autoencoder": 0.28655464503493266,
+        "deterministic": 0.23338941938731925
+      },
+      "hold_count": 37,
+      "review_count": 210
+    },
+    "Explainability": {
+      "wallets_explained": 500
+    },
+    "Alert Generation": {
+      "total_alerts": 500,
+      "high_risk_count": 225,
+      "medium_risk_count": 142,
+      "low_risk_count": 133
+    }
+  }
+}
