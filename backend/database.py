@@ -10,8 +10,7 @@ import sqlite3
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DB_PATH = PROJECT_ROOT / "outputs" / "jobs.db"
+from backend.config import DB_PATH as DEFAULT_DB_PATH
 
 
 def get_db_connection(db_path: Optional[Path] = None) -> sqlite3.Connection:

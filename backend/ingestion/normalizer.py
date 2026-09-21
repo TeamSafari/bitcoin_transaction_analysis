@@ -237,17 +237,13 @@ def normalize_dataset(
         )
     )
 
-    datasets["entities"] = (
-        normalize_entities(
-            datasets["entities"]
-        )
-    )
+    if "entities" in datasets:
+        datasets["entities"] = normalize_entities(datasets["entities"])
 
-    datasets["wallet_entity_links"] = (
-        normalize_wallet_entity_links(
+    if "wallet_entity_links" in datasets:
+        datasets["wallet_entity_links"] = normalize_wallet_entity_links(
             datasets["wallet_entity_links"]
         )
-    )
 
     datasets["transaction_inputs"] = (
         normalize_transaction_edges(

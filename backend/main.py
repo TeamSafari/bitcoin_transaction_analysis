@@ -1,210 +1,97 @@
-from pathlib import Path
+"""
+FastAPI entry point for the Bitcoin forensics backend.
+
+Run from the backend folder:
+    python main.py
+
+Or from the repo root:
+    python -m backend.main
+"""
+
+from __future__ import annotations
+
+import logging
 import sys
-import traceback
+from contextlib import asynccontextmanager
+from pathlib import Path
 
-
-# ============================================================
-# PROJECT ROOT
-# ============================================================
-
-PROJECT_ROOT = (
-    Path(__file__).resolve().parents[1]
-)
-
+# Allow `python main.py` when cwd is backend/
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-    sys.path.insert(
-        0,
-        str(PROJECT_ROOT),
-    )
+import backend.bootstrap  # noqa: F401 — suppress torch import warnings before ML deps load
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-# ============================================================
-# PIPELINE IMPORTS
-# ============================================================
+from backend.api.routes import alerts, explainability, graph, health, jobs, patterns
+from backend.config import ARTIFACT_DIR
+from backend.database import init_db
 
-from backend.feature_engineering.feature_pipeline import (
-    main as run_feature_engineering,
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
 
-from backend.graph.graph_engine import (
-    main as run_graph_engine,
-)
-
-from backend.graph.graphsage import (
-    main as run_graphsage,
-)
-
-from backend.models.isolation_forest import (
-    main as run_isolation_forest,
-)
-
-from backend.models.autoencoder import (
-    main as run_autoencoder,
-)
-
-from backend.risk.run_deterministic import (
-    main as run_deterministic,
-)
-
-from backend.risk.risk_fusion import (
-    main as run_risk_fusion,
-)
-
-from backend.models.risk_model import (
-    main as run_risk_model,
+REQUIRED_ARTIFACTS = (
+    "feature_scaler.pkl",
+    "graphsage.pt",
+    "isolation_forest.pkl",
+    "autoencoder.pt",
+    "risk_model.pkl",
 )
 
 
-# ============================================================
-# OPTIONAL LATER STAGES
-# ============================================================
-
-# These remain intentionally disabled until the complete
-# upstream production chain has been verified.
-#
-# from backend.explainability.shap_engine import ...
-# from backend.alerts.alert_service import ...
-
-
-# ============================================================
-# STAGE RUNNER
-# ============================================================
-
-def run_stage(
-    name,
-    function,
-):
-
-    print("\n")
-    print("=" * 70)
-    print(f"STARTING: {name}")
-    print("=" * 70)
-
-    try:
-
-        function()
-
-    except Exception as error:
-
-        print("\n")
-        print("#" * 70)
-        print(f"FAILED: {name}")
-        print("#" * 70)
-
-        print(
-            f"\n{error}"
-        )
-
-        traceback.print_exc()
-
-        raise
-
-    print(
-        f"\nCOMPLETED: {name}"
-    )
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    init_db()
+    missing = [name for name in REQUIRED_ARTIFACTS if not (ARTIFACT_DIR / name).exists()]
+    if missing:
+        logger.warning("Missing model artifacts: %s", missing)
+    else:
+        logger.info("All model artifacts present in %s", ARTIFACT_DIR)
+    yield
 
 
-# ============================================================
-# MAIN
-# ============================================================
+app = FastAPI(
+    title="Bitcoin Transaction Forensics API",
+    description="Orchestrated ML forensic pipeline with graph, fusion scoring, and SHAP explainability.",
+    version="3.0.0",
+    lifespan=lifespan,
+)
 
-def main():
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    print("\n")
-    print("#" * 70)
-    print("# BITCOIN TRANSACTION RISK PIPELINE")
-    print("#" * 70)
-
-    # --------------------------------------------------------
-    # 1. Feature engineering
-    # --------------------------------------------------------
-
-    run_stage(
-        "FEATURE ENGINEERING",
-        run_feature_engineering,
-    )
-
-    # --------------------------------------------------------
-    # 2. NetworkX
-    # --------------------------------------------------------
-
-    run_stage(
-        "NETWORKX GRAPH ENGINE",
-        run_graph_engine,
-    )
-
-    # --------------------------------------------------------
-    # 3. GraphSAGE
-    # --------------------------------------------------------
-
-    run_stage(
-        "GRAPHSAGE",
-        run_graphsage,
-    )
-
-    # --------------------------------------------------------
-    # 4. Isolation Forest
-    # --------------------------------------------------------
-
-    run_stage(
-        "ISOLATION FOREST",
-        run_isolation_forest,
-    )
-
-    # --------------------------------------------------------
-    # 5. Autoencoder
-    # --------------------------------------------------------
-
-    run_stage(
-        "AUTOENCODER",
-        run_autoencoder,
-    )
-
-    # --------------------------------------------------------
-    # 6. Deterministic statistical risk
-    # --------------------------------------------------------
-
-    run_stage(
-        "DETERMINISTIC STATISTICAL RISK",
-        run_deterministic,
-    )
-
-    # --------------------------------------------------------
-    # 7. Risk feature fusion
-    # --------------------------------------------------------
-
-    run_stage(
-        "RISK FEATURE FUSION",
-        run_risk_fusion,
-    )
-
-    # --------------------------------------------------------
-    # 8. XGBoost
-    # --------------------------------------------------------
-
-    run_stage(
-        "XGBOOST RISK MODEL",
-        run_risk_model,
-    )
-
-    print("\n")
-    print("#" * 70)
-    print("# CORE PIPELINE COMPLETED")
-    print("#" * 70)
-
-    print(
-        "\nNext stages:"
-    )
-
-    print(
-        "SHAP → Alert Service → AI Agent"
-    )
+@app.get("/")
+async def root():
+    return {
+        "service": "Bitcoin Transaction Forensics API",
+        "version": "3.0.0",
+        "docs": "/docs",
+        "health": "/api/v1/health",
+        "upload": "POST /api/v1/jobs/upload",
+    }
 
 
-# ============================================================
-# ENTRY POINT
-# ============================================================
+app.include_router(jobs.router)
+app.include_router(graph.router)
+app.include_router(alerts.router)
+app.include_router(explainability.router)
+app.include_router(patterns.router)
+app.include_router(health.router)
+
+
+def create_app() -> FastAPI:
+    """Return the application instance (used by tests and ASGI servers)."""
+    return app
+
 
 if __name__ == "__main__":
-    main()
+    import uvicorn
+
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")

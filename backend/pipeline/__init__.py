@@ -1,7 +1,5 @@
-"""
-Bitcoin Forensic Pipeline Package
-"""
+"""Bitcoin forensic pipeline package."""
 
-from backend.pipeline.orchestrator import run_pipeline, Orchestrator
+from backend.pipeline.orchestrator import Orchestrator, run_pipeline
 
-__all__ = ["run_pipeline", "Orchestrator"]
+__all__ = ["Orchestrator", "run_pipeline"]
