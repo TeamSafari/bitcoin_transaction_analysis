@@ -1,0 +1,16 @@
+ip_id,ip,country_code,country_name,region_name,city_name,latitude,longitude,zip_code,time_zone,asn,as_name,network_type
+IP001,10.20.1.11,IN,India,Tamil Nadu,Chennai,13.08,80.27,,Asia/Kolkata,65001,Synthetic ISP,mobile
+IP002,10.20.2.12,IN,India,Tamil Nadu,Chennai,13.08,80.27,,Asia/Kolkata,65002,Synthetic ISP,residential
+IP003,10.20.3.13,IN,India,Tamil Nadu,Chennai,13.08,80.27,,Asia/Kolkata,65003,Synthetic ISP,residential
+IP004,10.20.4.14,IN,India,Tamil Nadu,Chennai,13.08,80.27,,Asia/Kolkata,65004,Synthetic ISP,business
+IP005,10.20.5.15,SG,Singapore,Central,Singapore,1.35,103.82,,Asia/Singapore,65005,Synthetic Hosting,datacenter
+IP006,10.20.6.16,NL,Netherlands,North Holland,Amsterdam,52.37,4.9,,Europe/Amsterdam,65006,Synthetic Hosting,datacenter
+IP007,10.20.7.17,DE,Germany,Berlin,Berlin,52.52,13.4,,Europe/Berlin,65007,Synthetic Hosting,datacenter
+IP008,10.20.8.18,US,United States,California,San Francisco,37.77,-122.42,,America/Los_Angeles,65008,Synthetic ISP,residential
+IP009,10.20.9.19,IN,India,Tamil Nadu,Chennai,13.08,80.27,,Asia/Kolkata,65009,Synthetic ISP,business
+IP010,10.20.10.20,NL,Netherlands,North Holland,Amsterdam,52.37,4.9,,Europe/Amsterdam,65010,Synthetic ISP,business
+IP011,10.20.11.21,DE,Germany,Berlin,Berlin,52.52,13.4,,Europe/Berlin,65011,Synthetic ISP,mobile
+IP012,10.20.12.22,DE,Germany,Berlin,Berlin,52.52,13.4,,Europe/Berlin,65012,Synthetic ISP,mobile
+IP013,10.20.13.23,US,United States,California,San Francisco,37.77,-122.42,,America/Los_Angeles,65013,Synthetic ISP,residential
+IP014,10.20.14.24,IN,India,Tamil Nadu,Chennai,13.08,80.27,,Asia/Kolkata,65014,Synthetic ISP,business
+IP015,10.20.15.25,DE,Germany,Berlin,Berlin,52.52,13.4,,Europe/Berlin,65015,Synthetic ISP,residential

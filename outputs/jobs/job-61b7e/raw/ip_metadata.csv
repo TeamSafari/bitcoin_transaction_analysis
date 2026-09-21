@@ -1,0 +1,61 @@
+ip_id,ip,country_code,country_name,region_name,city_name,latitude,longitude,zip_code,time_zone,asn,as_name,network_type
+IP00001,45.12.1.10,IN,India,Tamil Nadu,Chennai,13.0827,80.2707,600001,Asia/Kolkata,64501,Synthetic Fiber,residential
+IP00002,45.12.2.10,IN,India,Tamil Nadu,Chennai,13.0827,80.2707,600001,Asia/Kolkata,64502,Synthetic Mobile,residential
+IP00003,45.12.3.10,SG,Singapore,Central,Singapore,1.3521,103.8198,018956,Asia/Singapore,64503,Synthetic Datacenter,datacenter
+IP00004,45.12.4.10,NL,Netherlands,North Holland,Amsterdam,52.3676,4.9041,1012,Europe/Amsterdam,64504,Synthetic Hosting,datacenter
+IP00005,45.12.5.10,DE,Germany,Berlin,Berlin,52.52,13.405,10115,Europe/Berlin,64505,Synthetic Cloud,datacenter
+IP00006,45.12.6.10,US,United States,California,San Francisco,37.7749,-122.4194,94105,America/Los_Angeles,64506,Synthetic Business ISP,business
+IP00007,45.12.7.10,GB,United Kingdom,England,London,51.5074,-0.1278,EC1A,Europe/London,64507,Synthetic Relay,datacenter
+IP00008,45.119.172.172,NL,Netherlands,North Holland,Amsterdam,52.51091350802268,4.827553335310109,1012,Europe/Amsterdam,20816,Synthetic Hosting,residential
+IP00009,45.156.13.233,IN,India,Karnataka,Bengaluru,12.886816205071764,77.64611358641982,560001,Asia/Kolkata,11776,Synthetic ISP,unknown
+IP00010,45.138.93.13,US,United States,California,San Francisco,37.583025051135444,-122.5575178664466,94105,America/Los_Angeles,39799,Synthetic Mobile,residential
+IP00011,45.117.142.193,SG,Singapore,Central,Singapore,1.7130632958884495,103.75705186140699,018956,Asia/Singapore,64716,Synthetic ISP,business
+IP00012,45.158.26.244,NL,Netherlands,North Holland,Amsterdam,52.24756827497615,5.0242152745999,1012,Europe/Amsterdam,61198,Synthetic ISP,residential
+IP00013,45.83.102.215,GB,United Kingdom,England,London,51.12370401385626,-0.4058941233721677,EC1A,Europe/London,18272,Synthetic Hosting,residential
+IP00014,45.75.238.180,US,United States,California,San Francisco,37.57989495724975,-122.52428386054164,94105,America/Los_Angeles,49707,Synthetic Enterprise,residential
+IP00015,45.219.83.247,US,United States,California,San Francisco,37.62373113567888,-122.3564522139926,94105,America/Los_Angeles,30444,Synthetic Enterprise,business
+IP00016,45.116.203.242,US,United States,California,San Francisco,37.94691176403958,-122.75860281772555,94105,America/Los_Angeles,55260,Synthetic Broadband,datacenter
+IP00017,45.97.61.204,IN,India,Tamil Nadu,Chennai,13.469775481211737,80.49680827708882,600001,Asia/Kolkata,32754,Synthetic Enterprise,mobile
+IP00018,45.37.174.4,NL,Netherlands,North Holland,Amsterdam,52.64726050159967,5.161964734472046,1012,Europe/Amsterdam,16916,Synthetic Hosting,mobile
+IP00019,45.137.78.112,SG,Singapore,Central,Singapore,1.0930095688688475,103.83719739755078,018956,Asia/Singapore,52628,Synthetic Mobile,mobile
+IP00020,45.157.247.120,DE,Germany,Berlin,Berlin,52.46845959440312,13.589820971444098,10115,Europe/Berlin,27589,Synthetic Mobile,business
+IP00021,45.42.142.226,GB,United Kingdom,England,London,51.46804160015501,0.07258102546160497,EC1A,Europe/London,47345,Synthetic Enterprise,residential
+IP00022,45.27.253.218,US,United States,California,San Francisco,37.63491133431101,-122.42936005408691,94105,America/Los_Angeles,33253,Synthetic Mobile,residential
+IP00023,45.172.141.143,SG,Singapore,Central,Singapore,0.9602208915509418,104.17825006222162,018956,Asia/Singapore,15610,Synthetic Broadband,residential
+IP00024,45.162.123.177,US,United States,California,San Francisco,37.75577448862733,-122.24992607482181,94105,America/Los_Angeles,39371,Synthetic ISP,residential
+IP00025,45.123.124.79,IN,India,Tamil Nadu,Chennai,13.213868017277454,80.16591636052884,600001,Asia/Kolkata,46272,Synthetic Enterprise,residential
+IP00026,45.210.169.91,SG,Singapore,Central,Singapore,1.5143839537486152,103.63653314158095,018956,Asia/Singapore,26475,Synthetic Broadband,residential
+IP00027,45.100.61.191,IN,India,Tamil Nadu,Chennai,13.111391172307,80.48045168758729,600001,Asia/Kolkata,22133,Synthetic Broadband,business
+IP00028,45.90.144.252,IN,India,Karnataka,Bengaluru,12.652020886472632,77.34989406247286,560001,Asia/Kolkata,24908,Synthetic Mobile,business
+IP00029,45.201.64.71,IN,India,Karnataka,Bengaluru,12.608012560786575,77.23822081619119,560001,Asia/Kolkata,29145,Synthetic Broadband,residential
+IP00030,45.145.52.224,US,United States,California,San Francisco,37.38471232270041,-122.59192853829028,94105,America/Los_Angeles,41373,Synthetic Hosting,datacenter
+IP00031,45.33.129.241,SG,Singapore,Central,Singapore,1.6414783717020107,103.51106971257994,018956,Asia/Singapore,14282,Synthetic Hosting,residential
+IP00032,45.181.27.39,NL,Netherlands,North Holland,Amsterdam,52.08695806757893,4.954371677667651,1012,Europe/Amsterdam,29912,Synthetic ISP,residential
+IP00033,45.215.213.156,IN,India,Karnataka,Bengaluru,13.04850147632802,77.68933468199782,560001,Asia/Kolkata,60835,Synthetic Enterprise,residential
+IP00034,45.133.152.221,NL,Netherlands,North Holland,Amsterdam,52.438420110976885,4.84716386891234,1012,Europe/Amsterdam,47265,Synthetic Enterprise,residential
+IP00035,45.209.50.243,IN,India,Tamil Nadu,Chennai,13.292889683483768,80.37111202432529,600001,Asia/Kolkata,27343,Synthetic ISP,mobile
+IP00036,45.161.38.41,IN,India,Karnataka,Bengaluru,12.573740578082308,77.55500296369416,560001,Asia/Kolkata,48916,Synthetic Hosting,residential
+IP00037,45.93.144.180,SG,Singapore,Central,Singapore,1.6397853850724182,103.47674380812279,018956,Asia/Singapore,25297,Synthetic Mobile,residential
+IP00038,45.170.101.109,GB,United Kingdom,England,London,51.19922104196883,-0.34795243978718093,EC1A,Europe/London,19764,Synthetic Mobile,business
+IP00039,45.35.84.203,GB,United Kingdom,England,London,51.35348945009138,0.07136617765569866,EC1A,Europe/London,47303,Synthetic Mobile,residential
+IP00040,45.196.155.180,NL,Netherlands,North Holland,Amsterdam,52.289606815330245,4.72189695451541,1012,Europe/Amsterdam,45388,Synthetic Hosting,residential
+IP00041,45.30.221.189,NL,Netherlands,North Holland,Amsterdam,52.22545726668665,4.704394321929603,1012,Europe/Amsterdam,15985,Synthetic Broadband,residential
+IP00042,45.167.10.196,US,United States,California,San Francisco,37.912725267442596,-122.60379117922635,94105,America/Los_Angeles,12636,Synthetic Broadband,business
+IP00043,45.133.142.47,NL,Netherlands,North Holland,Amsterdam,52.765156379946056,4.852807989661602,1012,Europe/Amsterdam,63362,Synthetic Hosting,residential
+IP00044,45.124.170.83,IN,India,Tamil Nadu,Chennai,13.21880680761695,80.55688647552029,600001,Asia/Kolkata,31614,Synthetic Hosting,residential
+IP00045,45.189.205.209,US,United States,California,San Francisco,37.98329981764613,-122.79004229574903,94105,America/Los_Angeles,15771,Synthetic Mobile,residential
+IP00046,45.217.206.222,SG,Singapore,Central,Singapore,1.3637770018632842,104.21029537182541,018956,Asia/Singapore,53100,Synthetic Enterprise,residential
+IP00047,45.68.185.160,NL,Netherlands,North Holland,Amsterdam,52.57275452324446,5.004426993716007,1012,Europe/Amsterdam,59806,Synthetic ISP,residential
+IP00048,45.53.147.113,IN,India,Karnataka,Bengaluru,13.276277293886245,77.58236943756,560001,Asia/Kolkata,11891,Synthetic Enterprise,residential
+IP00049,45.60.159.142,GB,United Kingdom,England,London,51.11833957157285,-0.201407450168078,EC1A,Europe/London,24725,Synthetic ISP,residential
+IP00050,45.185.78.128,NL,Netherlands,North Holland,Amsterdam,52.71372244794728,4.737589248209429,1012,Europe/Amsterdam,56229,Synthetic Mobile,datacenter
+IP00051,45.140.124.117,NL,Netherlands,North Holland,Amsterdam,52.40861206150438,4.8109688105977195,1012,Europe/Amsterdam,49280,Synthetic Enterprise,business
+IP00052,45.37.141.198,US,United States,California,San Francisco,38.00690494560249,-122.48744606115892,94105,America/Los_Angeles,61623,Synthetic Enterprise,datacenter
+IP00053,45.92.152.215,SG,Singapore,Central,Singapore,1.4216501779313289,104.21892186658347,018956,Asia/Singapore,42089,Synthetic Broadband,business
+IP00054,45.108.170.142,NL,Netherlands,North Holland,Amsterdam,52.57789814209599,4.805868043371109,1012,Europe/Amsterdam,31088,Synthetic Broadband,residential
+IP00055,45.118.119.220,US,United States,California,San Francisco,37.99533558007941,-122.78448216072215,94105,America/Los_Angeles,58804,Synthetic Hosting,residential
+IP00056,45.117.197.254,US,United States,California,San Francisco,37.90585106358763,-122.16280195863236,94105,America/Los_Angeles,19968,Synthetic Hosting,datacenter
+IP00057,45.171.169.223,IN,India,Tamil Nadu,Chennai,12.762991681731883,80.54673153848832,600001,Asia/Kolkata,16534,Synthetic Enterprise,residential
+IP00058,45.56.209.223,NL,Netherlands,North Holland,Amsterdam,52.49142506114219,4.627588975017239,1012,Europe/Amsterdam,40768,Synthetic Mobile,residential
+IP00059,45.121.41.219,SG,Singapore,Central,Singapore,1.214952471186765,103.95928599612321,018956,Asia/Singapore,44971,Synthetic Hosting,mobile
+IP00060,45.214.249.224,SG,Singapore,Central,Singapore,1.384912810158128,103.91376756928219,018956,Asia/Singapore,25385,Synthetic Mobile,mobile

@@ -1,0 +1,337 @@
+{
+  "tx_count": {
+    "median": 4.0,
+    "mad": 2.0,
+    "robust_z_median": 0.6745
+  },
+  "incoming_tx_count": {
+    "median": 4.0,
+    "mad": 2.0,
+    "robust_z_median": 0.6745
+  },
+  "total_received_sats": {
+    "median": 154378869.0,
+    "mad": 54003631.0,
+    "robust_z_median": 0.6745
+  },
+  "avg_received_sats": {
+    "median": 37866974.4,
+    "mad": 6827420.924999999,
+    "robust_z_median": 0.6745
+  },
+  "median_received_sats": {
+    "median": 37893570.25,
+    "mad": 7627151.0,
+    "robust_z_median": 0.6745000000000001
+  },
+  "max_received_sats": {
+    "median": 62092127.0,
+    "mad": 9806616.0,
+    "robust_z_median": 0.6745
+  },
+  "std_received_sats": {
+    "median": 17156001.96784305,
+    "mad": 5632916.947494109,
+    "robust_z_median": 0.6745
+  },
+  "unique_input_counterparties": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "outgoing_tx_count": {
+    "median": 4.0,
+    "mad": 1.5,
+    "robust_z_median": 0.6745
+  },
+  "total_sent_sats": {
+    "median": 165012126.0,
+    "mad": 46908281.0,
+    "robust_z_median": 0.6744999999999999
+  },
+  "avg_sent_sats": {
+    "median": 37666348.75,
+    "mad": 8384120.25,
+    "robust_z_median": 0.6745
+  },
+  "median_sent_sats": {
+    "median": 35852353.5,
+    "mad": 12191833.75,
+    "robust_z_median": 0.6745
+  },
+  "max_sent_sats": {
+    "median": 62899556.5,
+    "mad": 9300306.5,
+    "robust_z_median": 0.6744999999999999
+  },
+  "std_sent_sats": {
+    "median": 19500844.868566923,
+    "mad": 6100790.725560604,
+    "robust_z_median": 0.6745
+  },
+  "unique_output_counterparties": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "avg_inputs_per_tx": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "max_inputs_per_tx": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "avg_outputs_per_tx": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "max_outputs_per_tx": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "unique_counterparties": {
+    "median": 2.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "fan_in": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "fan_out": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "in_out_ratio": {
+    "median": 0.9094818048281472,
+    "mad": 0.3508987758717949,
+    "robust_z_median": 0.6745
+  },
+  "avg_inter_tx_seconds": {
+    "median": 254946.25,
+    "mad": 56130.83333333333,
+    "robust_z_median": 0.6745
+  },
+  "median_inter_tx_seconds": {
+    "median": 188175.0,
+    "mad": 63165.0,
+    "robust_z_median": 0.6745
+  },
+  "min_inter_tx_seconds": {
+    "median": 26760.0,
+    "mad": 23610.0,
+    "robust_z_median": 0.6745
+  },
+  "std_inter_tx_seconds": {
+    "median": 208711.7661998346,
+    "mad": 55319.87898113897,
+    "robust_z_median": 0.6744999999999999
+  },
+  "first_seen": {
+    "median": 1780638660000000.0,
+    "mad": 263010000000.0,
+    "robust_z_median": 0.6745
+  },
+  "last_seen": {
+    "median": 1782804360000000.0,
+    "mad": 101940000000.0,
+    "robust_z_median": 0.6745000000000001
+  },
+  "active_duration_seconds": {
+    "median": 2044530.0,
+    "mad": 322260.0,
+    "robust_z_median": 0.6745
+  },
+  "transaction_velocity": {
+    "median": 4.5350240245721e-06,
+    "mad": 1.0578468868360352e-06,
+    "robust_z_median": 0.6744999999999999
+  },
+  "burstiness": {
+    "median": -0.04739998401335034,
+    "mad": 0.06737058669786467,
+    "robust_z_median": 0.6745000000000001
+  },
+  "observation_count": {
+    "median": 4.0,
+    "mad": 2.0,
+    "robust_z_median": 0.6745
+  },
+  "unique_src_ips": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "unique_dst_ips": {
+    "median": 4.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "unique_src_ports": {
+    "median": 4.0,
+    "mad": 2.0,
+    "robust_z_median": 0.6745
+  },
+  "unique_dst_ports": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "mean_latency_ms": {
+    "median": 94.325,
+    "mad": 15.825000000000003,
+    "robust_z_median": 0.6744999999999999
+  },
+  "median_latency_ms": {
+    "median": 99.5,
+    "mad": 22.0,
+    "robust_z_median": 0.6745
+  },
+  "std_latency_ms": {
+    "median": 39.69998923727354,
+    "mad": 13.960731997414111,
+    "robust_z_median": 0.6745
+  },
+  "total_bytes_sent": {
+    "median": 6831.0,
+    "mad": 3561.0,
+    "robust_z_median": 0.6745000000000001
+  },
+  "total_bytes_received": {
+    "median": 8151.0,
+    "mad": 2871.0,
+    "robust_z_median": 0.6745000000000001
+  },
+  "inbound_ratio": {
+    "median": 0.502189643625118,
+    "mad": 0.07145777167387193,
+    "robust_z_median": 0.6745000000000001
+  },
+  "outbound_ratio": {
+    "median": 0.47999530378787236,
+    "mad": 0.0771271241906204,
+    "robust_z_median": 0.6745
+  },
+  "unique_countries": {
+    "median": 3.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "unique_asns": {
+    "median": 5.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "unique_network_types": {
+    "median": 3.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "country_entropy": {
+    "median": 1.2987949406953985,
+    "mad": 0.31535424334024464,
+    "robust_z_median": 0.6744999999999999
+  },
+  "asn_entropy": {
+    "median": 1.8475177829378437,
+    "mad": 0.34436093777043353,
+    "robust_z_median": 0.6744999999999999
+  },
+  "shared_ip_wallet_count": {
+    "median": 20.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "shared_asn_wallet_count": {
+    "median": 20.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "avg_network_tx_time_difference": {
+    "median": 1.45,
+    "mad": 0.44999999999999996,
+    "robust_z_median": 0.6745
+  },
+  "min_network_tx_time_difference": {
+    "median": 0.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "observations_per_tx": {
+    "median": 1.0,
+    "mad": 0.0,
+    "robust_z_median": 0.0
+  },
+  "rapid_hop_count": {
+    "median": 2.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "degree": {
+    "median": 8.0,
+    "mad": 2.0,
+    "robust_z_median": 0.6745
+  },
+  "in_degree": {
+    "median": 4.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "out_degree": {
+    "median": 4.0,
+    "mad": 1.5,
+    "robust_z_median": 0.6745
+  },
+  "weighted_degree": {
+    "median": 9.0,
+    "mad": 2.0,
+    "robust_z_median": 0.6745
+  },
+  "weighted_in_degree": {
+    "median": 4.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "weighted_out_degree": {
+    "median": 4.0,
+    "mad": 2.0,
+    "robust_z_median": 0.6745
+  },
+  "pagerank": {
+    "median": 0.019064112940442215,
+    "mad": 0.005708444793555526,
+    "robust_z_median": 0.6745
+  },
+  "betweenness_centrality": {
+    "median": 0.030941772452126586,
+    "mad": 0.01653475964700455,
+    "robust_z_median": 0.6745000000000001
+  },
+  "clustering_coefficient": {
+    "median": 0.1388888888888889,
+    "mad": 0.052777777777777785,
+    "robust_z_median": 0.6744999999999999
+  },
+  "community_id": {
+    "median": 2.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "community_size": {
+    "median": 9.0,
+    "mad": 1.0,
+    "robust_z_median": 0.6745
+  },
+  "two_hop_neighbor_count": {
+    "median": 13.0,
+    "mad": 4.0,
+    "robust_z_median": 0.6745
+  }
+}

@@ -438,6 +438,44 @@ def batch_explain_wallets(wallet_ids, workers=5):
 
 For interactive API documentation with try-it-out functionality:
 
+### 4. Job Upload Endpoint: Async Forensic Pipeline Processing
+
+**Endpoint:** `POST /api/v1/jobs/upload`
+
+**Purpose:** Upload the 6 raw CSV files (without risk labels) to trigger the full forensic pipeline (Feature Engineering, Graph Engine, GraphSAGE, Isolation Forest, Autoencoder, Deterministic Risk, LightGBM/XGBoost, SHAP explainability, and Alerts) in the background.
+
+#### Request (Multipart Form-Data)
+
+| File Field | Description | Required |
+|---|---|---|
+| `wallets` | `wallets.csv` master wallet records | Yes |
+| `transactions` | `transactions.csv` master transaction records | Yes |
+| `transaction_inputs` | `transaction_inputs.csv` input edges | Yes |
+| `transaction_outputs` | `transaction_outputs.csv` output edges | Yes |
+| `network_observations` | `network_observations.csv` network/node logs | Yes |
+| `ip_metadata` | `ip_metadata.csv` GeoIP/ASN metadata | Yes |
+
+#### Response (`200 OK`)
+
+```json
+{
+  "job_id": "job-8f92a",
+  "status": "processing",
+  "message": "Uploads the raw CSV. Triggers Feature Engineering, GraphSAGE, Isolation Forest, LightGBM, and SHAP calculators in the background."
+}
+```
+
+### 5. Job Status & Results Endpoints
+
+- `GET /api/v1/jobs/{job_id}`: Query job status (`processing`, `completed`, `failed`), active stage, timestamps, and summary.
+- `GET /api/v1/jobs`: List all submitted analysis jobs.
+- `GET /api/v1/jobs/{job_id}/alerts`: Retrieve generated ranked alerts for completed job.
+- `GET /api/v1/jobs/{job_id}/manifest`: Retrieve pipeline execution summary and metrics.
+
+---
+
+## Interactive Documentation
+
 1. **Swagger UI:** `http://localhost:8000/docs`
 2. **ReDoc:** `http://localhost:8000/redoc`
 3. **OpenAPI Schema:** `http://localhost:8000/openapi.json`
@@ -447,41 +485,38 @@ For interactive API documentation with try-it-out functionality:
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    FastAPI Server                       │
-├──────────┬──────────────┬─────────────────┬──────────────┤
-│Traceability          │ Explainability │ Graph Explorer   │
-│├─ BFS Fund Tracing   │├─ Risk Factors  │├─ Ego-graphs    │
-│├─ Pattern Detection  │├─ SHAP Values   │├─ GNN Weights   │
-│└─ Confidence Scores  │└─ Descriptions  │└─ Node/Edge Data│
-├─────────────────────────────────────────────────────────┤
-│                    Data Loader Cache                     │
-├──────────┬──────────────┬─────────────────────────────────┤
-│Graph Edges│ Features    │GraphSAGE       │Risk Scores    │
-│10,975 rows│ 500×65 matrix│Embeddings 32-D│Deterministic  │
-└──────────┴──────────────┴─────────────────┴──────────────┘
-              ↓
-        ┌─────────────────┐
-        │  CSV Files      │
-        │  (outputs/)     │
-        └─────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                          FastAPI Server                                │
+├──────────────┬──────────────────┬─────────────────┬────────────────────┤
+│ Traceability │  Explainability  │ Graph Explorer  │  Jobs & Pipeline   │
+│ ├─ Patterns  │  ├─ SHAP Factors │ ├─ Ego-graphs   │  ├─ POST /upload   │
+│ └─ Hops      │  └─ Importance   │ └─ GNN Weights  │  └─ Background Run │
+├──────────────┴──────────────────┴─────────────────┴────────────────────┤
+│                         SQLite Job Database                            │
+│                              (jobs.db)                                 │
+├────────────────────────────────────────────────────────────────────────┤
+│                 Pipeline Orchestrator (Inference Engine)               │
+│ Ingestion → Features → NetworkX → GraphSAGE → IF/AE → Risk → SHAP → Alerts │
+├────────────────────────────────────────────────────────────────────────┤
+│                     Pre-trained Model Artifacts                        │
+│ graphsage.pt │ isolation_forest.pkl │ autoencoder.pt │ risk_model.pkl  │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## Configuration
 
-The API reads from:
-- `outputs/graphs/graph_edges.csv` - Transaction edges
-- `outputs/features/wallet_features.csv` - Wallet features
-- `outputs/graphs/graphsage_embeddings.csv` - GNN embeddings
-- `outputs/models/deterministic_scores.csv` - Risk scores
-- `outputs/models/risk_model_predictions.csv` - Model predictions
-
-To change the data source, modify `DATA_ROOT` in `create_app()`.
+The pipeline loads pre-trained model artifacts from:
+- `backend/models/artifacts/feature_scaler.pkl`
+- `backend/models/artifacts/graphsage.pt`
+- `backend/models/artifacts/isolation_forest.pkl` & `isolation_forest_scaler.pkl`
+- `backend/models/artifacts/autoencoder.pt` & `autoencoder_scaler.pkl`
+- `backend/models/artifacts/risk_model.pkl`
 
 ---
 
 ## License
 
 Bitcoin Transaction Analysis System - Internal Use Only
+

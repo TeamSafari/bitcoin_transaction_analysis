@@ -1,0 +1,2552 @@
+[
+  {
+    "wallet_id": "W024",
+    "severity": "HIGH",
+    "risk_probability": 0.9733,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3149,
+    "isolation_forest_score": 0.0517,
+    "autoencoder_score": 0.0714,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W024",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 25486178.0,
+        "shap_value": 2.106018304824829,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W024",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.051676603496400055,
+        "shap_value": 0.6215200424194336,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W024",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 0.5435644431995964,
+        "shap_value": -0.5929445028305054,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W024",
+        "rank": 4,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4839441180229187,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W024",
+        "rank": 5,
+        "feature": "graphsage_dim_10",
+        "feature_value": 0.16302832961082458,
+        "shap_value": 0.41590481996536255,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W036",
+    "severity": "HIGH",
+    "risk_probability": 0.9709,
+    "risk_prediction": 1,
+    "deterministic_score": 0.5773,
+    "isolation_forest_score": 0.442,
+    "autoencoder_score": 1.0,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W036",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 39925781.0,
+        "shap_value": 2.103584051132202,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W036",
+        "rank": 2,
+        "feature": "country_entropy",
+        "feature_value": 1.924174352300441,
+        "shap_value": -0.6623705625534058,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W036",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.4420267540106734,
+        "shap_value": 0.647722601890564,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W036",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.40795475244522095,
+        "shap_value": 0.5285599231719971,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W036",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.4,
+        "shap_value": 0.45698821544647217,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W014",
+    "severity": "HIGH",
+    "risk_probability": 0.9666,
+    "risk_prediction": 1,
+    "deterministic_score": 0.5773,
+    "isolation_forest_score": 0.5385,
+    "autoencoder_score": 0.0446,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W014",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 66763264.0,
+        "shap_value": 2.0409257411956787,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W014",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.5384500390142042,
+        "shap_value": 0.6748340129852295,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W014",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.0,
+        "shap_value": -0.6708993315696716,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W014",
+        "rank": 4,
+        "feature": "graphsage_dim_10",
+        "feature_value": 0.36459019780158997,
+        "shap_value": 0.4273422956466675,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W014",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4252387285232544,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W039",
+    "severity": "HIGH",
+    "risk_probability": 0.9611,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3818,
+    "isolation_forest_score": 0.3228,
+    "autoencoder_score": 0.0885,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W039",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 25992366.0,
+        "shap_value": 2.0784549713134766,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W039",
+        "rank": 2,
+        "feature": "country_entropy",
+        "feature_value": 1.2987949406953985,
+        "shap_value": -0.6578303575515747,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W039",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.3227838407592867,
+        "shap_value": 0.6494751572608948,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W039",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.2055302858352661,
+        "shap_value": 0.5069388151168823,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W039",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.3333333333333333,
+        "shap_value": 0.43170785903930664,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W011",
+    "severity": "HIGH",
+    "risk_probability": 0.9394,
+    "risk_prediction": 1,
+    "deterministic_score": 0.409,
+    "isolation_forest_score": 0.2798,
+    "autoencoder_score": 0.2129,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W011",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 42962359.5,
+        "shap_value": 2.0541141033172607,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W011",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.2798097829521212,
+        "shap_value": 0.6713278889656067,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W011",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.6697367178034825,
+        "shap_value": -0.5918298959732056,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W011",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.1909855455160141,
+        "shap_value": 0.485244482755661,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W011",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.47667717933654785,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W021",
+    "severity": "HIGH",
+    "risk_probability": 0.9232,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3585,
+    "isolation_forest_score": 0.4311,
+    "autoencoder_score": 0.1131,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W021",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 36239922.0,
+        "shap_value": 2.065223217010498,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W021",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.43107530092459667,
+        "shap_value": 0.6537688374519348,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W021",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.5510981710072647,
+        "shap_value": -0.5072053074836731,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W021",
+        "rank": 4,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4990527629852295,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W021",
+        "rank": 5,
+        "feature": "graphsage_dim_10",
+        "feature_value": 0.5772811770439148,
+        "shap_value": 0.3928326368331909,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W004",
+    "severity": "HIGH",
+    "risk_probability": 0.9165,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4343,
+    "isolation_forest_score": 0.5055,
+    "autoencoder_score": 0.1519,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W004",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 22714866.0,
+        "shap_value": 2.0611138343811035,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W004",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.5268688201904297,
+        "shap_value": -0.8725506067276001,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W004",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.5054919005308531,
+        "shap_value": 0.6305477023124695,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W004",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.2516291673878228,
+        "shap_value": -0.5785554051399231,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W004",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.33136582374572754,
+        "shap_value": 0.4251854419708252,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W020",
+    "severity": "HIGH",
+    "risk_probability": 0.9128,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3845,
+    "isolation_forest_score": 0.3159,
+    "autoencoder_score": 0.2151,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W020",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 46922730.0,
+        "shap_value": 2.0257580280303955,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W020",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.3158773001263891,
+        "shap_value": 0.6911478638648987,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W020",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.4838317068446891,
+        "shap_value": -0.6498655080795288,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W020",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.19727520644664764,
+        "shap_value": 0.48791277408599854,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W020",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4454224109649658,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W013",
+    "severity": "HIGH",
+    "risk_probability": 0.8929,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3707,
+    "isolation_forest_score": 0.3221,
+    "autoencoder_score": 0.1083,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W013",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 48857343.0,
+        "shap_value": 1.9970598220825195,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W013",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.3221086560787628,
+        "shap_value": 0.6530802249908447,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W013",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.9508257945180885,
+        "shap_value": -0.6153309345245361,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W013",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.23394882678985596,
+        "shap_value": -0.6063396334648132,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W013",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4546840786933899,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W026",
+    "severity": "HIGH",
+    "risk_probability": 0.884,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3663,
+    "isolation_forest_score": 0.2997,
+    "autoencoder_score": 0.1782,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W026",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 43572306.5,
+        "shap_value": 2.0347604751586914,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W026",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.2997275366046083,
+        "shap_value": 0.6646860241889954,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W026",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.024566590785980225,
+        "shap_value": -0.5532777309417725,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W026",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.6893917467430877,
+        "shap_value": -0.5461546182632446,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W026",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.5242904424667358,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W034",
+    "severity": "HIGH",
+    "risk_probability": 0.8818,
+    "risk_prediction": 1,
+    "deterministic_score": 0.449,
+    "isolation_forest_score": 0.2804,
+    "autoencoder_score": 0.1105,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W034",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 52211167.5,
+        "shap_value": 1.9873545169830322,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W034",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.2804280352072054,
+        "shap_value": 0.7303667664527893,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W034",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.5638081431388855,
+        "shap_value": -0.6004043221473694,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W034",
+        "rank": 4,
+        "feature": "observations_per_tx",
+        "feature_value": 1.3333333333333333,
+        "shap_value": 0.5232109427452087,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W034",
+        "rank": 5,
+        "feature": "country_entropy",
+        "feature_value": 1.9056390622295665,
+        "shap_value": -0.5042009353637695,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W002",
+    "severity": "HIGH",
+    "risk_probability": 0.8814,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3776,
+    "isolation_forest_score": 0.3508,
+    "autoencoder_score": 0.2483,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W002",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 57449121.0,
+        "shap_value": 1.9943115711212158,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W002",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.35078393591775797,
+        "shap_value": 0.6793053150177002,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W002",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.2516291673878228,
+        "shap_value": -0.6444904804229736,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W002",
+        "rank": 4,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4438691735267639,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W002",
+        "rank": 5,
+        "feature": "graphsage_dim_10",
+        "feature_value": 0.5118765830993652,
+        "shap_value": 0.39856356382369995,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W029",
+    "severity": "HIGH",
+    "risk_probability": 0.8811,
+    "risk_prediction": 1,
+    "deterministic_score": 0.6182,
+    "isolation_forest_score": 0.5391,
+    "autoencoder_score": 0.0,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W029",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 57227710.0,
+        "shap_value": 2.0287978649139404,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W029",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.5391097769103124,
+        "shap_value": 0.6447106599807739,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W029",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": -0.0,
+        "shap_value": -0.6124026775360107,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W029",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.3932322561740875,
+        "shap_value": -0.5736749172210693,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W029",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.46693986654281616,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W008",
+    "severity": "HIGH",
+    "risk_probability": 0.8757,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3701,
+    "isolation_forest_score": 0.052,
+    "autoencoder_score": 0.1078,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W008",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 20889409.0,
+        "shap_value": 2.003387451171875,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W008",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.051965409421717346,
+        "shap_value": 0.6753056645393372,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W008",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.7609640474436812,
+        "shap_value": -0.6632854342460632,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W008",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.23576270043849945,
+        "shap_value": 0.4900296926498413,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W008",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4329735040664673,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W009",
+    "severity": "HIGH",
+    "risk_probability": 0.8371,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3484,
+    "isolation_forest_score": 0.2496,
+    "autoencoder_score": 0.2203,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W009",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 30787790.0,
+        "shap_value": 2.040205478668213,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W009",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.24964395104690065,
+        "shap_value": 0.6530802249908447,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W009",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.9709505944546686,
+        "shap_value": -0.6153309345245361,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W009",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.05708402395248413,
+        "shap_value": -0.5876371264457703,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W009",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4987070560455322,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W049",
+    "severity": "HIGH",
+    "risk_probability": 0.8266,
+    "risk_prediction": 1,
+    "deterministic_score": 0.7343,
+    "isolation_forest_score": 1.0,
+    "autoencoder_score": 0.5318,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W049",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 179500000.0,
+        "shap_value": 1.9025163650512695,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W049",
+        "rank": 2,
+        "feature": "country_entropy",
+        "feature_value": 0.0,
+        "shap_value": -0.6370306611061096,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W049",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.9999999890866446,
+        "shap_value": 0.6180764436721802,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W049",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.07551991939544678,
+        "shap_value": -0.4826931059360504,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W049",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 0.0,
+        "shap_value": 0.4639551043510437,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W046",
+    "severity": "HIGH",
+    "risk_probability": 0.8193,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4143,
+    "isolation_forest_score": 0.5225,
+    "autoencoder_score": 0.1527,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W046",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 34713408.0,
+        "shap_value": 1.9916906356811523,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W046",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.5224579503621276,
+        "shap_value": 0.748143196105957,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W046",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.4017673432826996,
+        "shap_value": -0.5479026436805725,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W046",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.4591479170272448,
+        "shap_value": -0.5250201225280762,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W046",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.476124107837677,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W003",
+    "severity": "HIGH",
+    "risk_probability": 0.8181,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3848,
+    "isolation_forest_score": 0.2251,
+    "autoencoder_score": 0.0729,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W003",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 22189479.0,
+        "shap_value": 1.963810682296753,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W003",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.22511273441361437,
+        "shap_value": 0.688281774520874,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W003",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.3627467155456543,
+        "shap_value": -0.5581791996955872,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W003",
+        "rank": 4,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.5556893944740295,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W003",
+        "rank": 5,
+        "feature": "country_entropy",
+        "feature_value": 0.8166890883150209,
+        "shap_value": -0.5353245139122009,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W022",
+    "severity": "HIGH",
+    "risk_probability": 0.8124,
+    "risk_prediction": 1,
+    "deterministic_score": 0.6245,
+    "isolation_forest_score": 0.3121,
+    "autoencoder_score": 0.1222,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W022",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 61679700.0,
+        "shap_value": 1.938807725906372,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W022",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.6832862496376038,
+        "shap_value": -0.7891650199890137,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W022",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.31210138223874906,
+        "shap_value": 0.6412689685821533,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W022",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.406793475151062,
+        "shap_value": -0.5720764994621277,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W022",
+        "rank": 5,
+        "feature": "country_entropy",
+        "feature_value": 1.0,
+        "shap_value": -0.5628272294998169,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W023",
+    "severity": "HIGH",
+    "risk_probability": 0.8088,
+    "risk_prediction": 1,
+    "deterministic_score": 0.326,
+    "isolation_forest_score": 0.2058,
+    "autoencoder_score": 0.1362,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W023",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 31652595.0,
+        "shap_value": 2.0162174701690674,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W023",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.20576581931132934,
+        "shap_value": 0.7481194734573364,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W023",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.285613477230072,
+        "shap_value": -0.594119668006897,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W023",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 0.8812908992306927,
+        "shap_value": -0.5329849720001221,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W023",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.49813783168792725,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W032",
+    "severity": "HIGH",
+    "risk_probability": 0.808,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4072,
+    "isolation_forest_score": 0.2335,
+    "autoencoder_score": 0.2122,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W032",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 33948171.5,
+        "shap_value": 1.9869616031646729,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W032",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.2334896595044257,
+        "shap_value": 0.6626424789428711,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W032",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.5,
+        "shap_value": -0.5918298959732056,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W032",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.2370598018169403,
+        "shap_value": -0.584128737449646,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W032",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4559977054595947,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W031",
+    "severity": "HIGH",
+    "risk_probability": 0.8004,
+    "risk_prediction": 1,
+    "deterministic_score": 0.5507,
+    "isolation_forest_score": 0.3038,
+    "autoencoder_score": 0.0446,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W031",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 32067119.0,
+        "shap_value": 1.9890670776367188,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W031",
+        "rank": 2,
+        "feature": "observations_per_tx",
+        "feature_value": 2.0,
+        "shap_value": -0.9155458211898804,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W031",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.30379299237472734,
+        "shap_value": 0.8002991080284119,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W031",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.6162499189376831,
+        "shap_value": 0.6768503189086914,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W031",
+        "rank": 5,
+        "feature": "country_entropy",
+        "feature_value": 1.0,
+        "shap_value": -0.6009117364883423,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W028",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7887,
+    "risk_prediction": 1,
+    "deterministic_score": 0.2484,
+    "isolation_forest_score": 0.0709,
+    "autoencoder_score": 0.1145,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W028",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 51616273.0,
+        "shap_value": 1.974085807800293,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W028",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.070926934082645,
+        "shap_value": 0.6824624538421631,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W028",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.75,
+        "shap_value": -0.6153309345245361,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W028",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.12202825397253036,
+        "shap_value": -0.594119668006897,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W028",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.49301648139953613,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W035",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7818,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3579,
+    "isolation_forest_score": 0.0,
+    "autoencoder_score": 0.1251,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W035",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 53273702.5,
+        "shap_value": 1.9710607528686523,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W035",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.0,
+        "shap_value": 0.6444065570831299,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W035",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.75,
+        "shap_value": -0.5830756425857544,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W035",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.4216141402721405,
+        "shap_value": -0.5547778606414795,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W035",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.5359804034233093,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W033",
+    "severity": "MEDIUM",
+    "risk_probability": 0.779,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4764,
+    "isolation_forest_score": 0.3592,
+    "autoencoder_score": 0.5353,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W033",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 42347970.5,
+        "shap_value": 1.94620680809021,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W033",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.3592488544382718,
+        "shap_value": 0.6821584105491638,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W033",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.16904142498970032,
+        "shap_value": -0.6078585982322693,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W033",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.5709505944546687,
+        "shap_value": -0.573034942150116,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W033",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4976280927658081,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W044",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7772,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3758,
+    "isolation_forest_score": 0.3836,
+    "autoencoder_score": 0.0393,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W044",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 21551280.5,
+        "shap_value": 1.9697389602661133,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W044",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.3835961072147086,
+        "shap_value": 0.670552670955658,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W044",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.2516291673878228,
+        "shap_value": -0.5918298959732056,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W044",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.47303837537765503,
+        "shap_value": -0.5862841010093689,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W044",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.491113543510437,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W017",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7764,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4821,
+    "isolation_forest_score": 0.1691,
+    "autoencoder_score": 0.2877,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W017",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 23852597.0,
+        "shap_value": 1.9473774433135986,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W017",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.16913702761980648,
+        "shap_value": 0.7033888697624207,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W017",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.6027348041534424,
+        "shap_value": -0.5850738286972046,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W017",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 0.5435644431995964,
+        "shap_value": -0.5542811155319214,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W017",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.5435292720794678,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W040",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7682,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4812,
+    "isolation_forest_score": 0.2827,
+    "autoencoder_score": 0.0438,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W040",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 12227474.0,
+        "shap_value": 1.9157261848449707,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W040",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.0200423002243042,
+        "shap_value": -0.775368332862854,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W040",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.2826676858061999,
+        "shap_value": 0.6651082634925842,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W040",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.7924812503605778,
+        "shap_value": -0.6622778177261353,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W040",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.14703312516212463,
+        "shap_value": 0.48920804262161255,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W006",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7671,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4301,
+    "isolation_forest_score": 0.355,
+    "autoencoder_score": 0.1894,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W006",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 49292860.0,
+        "shap_value": 1.9219841957092285,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W006",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.35504703247012265,
+        "shap_value": 0.7441198229789734,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W006",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.11540710926055908,
+        "shap_value": -0.607544481754303,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W006",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.5,
+        "shap_value": -0.57684326171875,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W006",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.48698151111602783,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W027",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7644,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3116,
+    "isolation_forest_score": 0.2454,
+    "autoencoder_score": 0.1053,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W027",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 26461139.0,
+        "shap_value": 1.944080114364624,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W027",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.24540710426466406,
+        "shap_value": 0.7371190786361694,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W027",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.5899039506912231,
+        "shap_value": -0.592848002910614,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W027",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 0.8812908992306927,
+        "shap_value": -0.5612751245498657,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W027",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.5391415953636169,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W012",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7555,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4875,
+    "isolation_forest_score": 0.5897,
+    "autoencoder_score": 0.0317,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W012",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 29149558.0,
+        "shap_value": 1.9587571620941162,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W012",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.5725327730178833,
+        "shap_value": -0.9011920690536499,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W012",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.5897181402138215,
+        "shap_value": 0.6184657216072083,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W012",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 0.9182958340544896,
+        "shap_value": -0.5505571961402893,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W012",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.28757232427597046,
+        "shap_value": 0.44654378294944763,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W045",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7499,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4281,
+    "isolation_forest_score": 0.307,
+    "autoencoder_score": 0.023,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W045",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 39079556.5,
+        "shap_value": 1.8734798431396484,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W045",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.3069719047166488,
+        "shap_value": 0.6867438554763794,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W045",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.5,
+        "shap_value": -0.630992591381073,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W045",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": -0.2220935821533203,
+        "shap_value": 0.497403085231781,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W045",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.40055739879608154,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W015",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7465,
+    "risk_prediction": 1,
+    "deterministic_score": 0.446,
+    "isolation_forest_score": 0.3128,
+    "autoencoder_score": 0.2468,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W015",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 35464785.0,
+        "shap_value": 1.9546713829040527,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W015",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.31275941712890515,
+        "shap_value": 0.665659487247467,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W015",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.6493974703476992,
+        "shap_value": -0.6195701360702515,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W015",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.06028464436531067,
+        "shap_value": -0.5102996826171875,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W015",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.43911463022232056,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W038",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7445,
+    "risk_prediction": 1,
+    "deterministic_score": 0.389,
+    "isolation_forest_score": 0.1658,
+    "autoencoder_score": 0.0746,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W038",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 33813625.5,
+        "shap_value": 1.9274287223815918,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W038",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.1658073263896828,
+        "shap_value": 0.6587100625038147,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W038",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": -0.0,
+        "shap_value": -0.6553205847740173,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W038",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.11843115091323853,
+        "shap_value": -0.5504634976387024,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W038",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.443914532661438,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W007",
+    "severity": "MEDIUM",
+    "risk_probability": 0.734,
+    "risk_prediction": 1,
+    "deterministic_score": 0.2761,
+    "isolation_forest_score": 0.2072,
+    "autoencoder_score": 0.1432,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W007",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 48236264.5,
+        "shap_value": 1.960902452468872,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W007",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.20723759952292684,
+        "shap_value": 0.6785300970077515,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W007",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.4056390622295665,
+        "shap_value": -0.5988152623176575,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W007",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.3716871738433838,
+        "shap_value": -0.5626801252365112,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W007",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4914436340332031,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W001",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7337,
+    "risk_prediction": 1,
+    "deterministic_score": 0.494,
+    "isolation_forest_score": 0.3108,
+    "autoencoder_score": 0.2652,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W001",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 21433342.0,
+        "shap_value": 2.0230960845947266,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W001",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.3107560063275338,
+        "shap_value": 0.6567758321762085,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W001",
+        "rank": 3,
+        "feature": "country_entropy",
+        "feature_value": 1.6774212838293647,
+        "shap_value": -0.6274012923240662,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W001",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.37672245502471924,
+        "shap_value": -0.6241281032562256,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W001",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.43460339307785034,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W016",
+    "severity": "MEDIUM",
+    "risk_probability": 0.7314,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3797,
+    "isolation_forest_score": 0.1456,
+    "autoencoder_score": 0.1796,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W016",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 56979663.0,
+        "shap_value": 1.947119951248169,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W016",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.023359060287475586,
+        "shap_value": -0.7805771827697754,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W016",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.14560862008494785,
+        "shap_value": 0.6163204908370972,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W016",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 0.9798687566511528,
+        "shap_value": -0.5651411414146423,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W016",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.18461467325687408,
+        "shap_value": -0.5118648409843445,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W050",
+    "severity": "MEDIUM",
+    "risk_probability": 0.6981,
+    "risk_prediction": 1,
+    "deterministic_score": 0.6722,
+    "isolation_forest_score": 0.6311,
+    "autoencoder_score": 0.2049,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W050",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 115000000.0,
+        "shap_value": 1.9400410652160645,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W050",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.13743416965007782,
+        "shap_value": -0.990492582321167,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W050",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.6310645264359065,
+        "shap_value": 0.6141724586486816,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W050",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 0.0,
+        "shap_value": -0.5755413174629211,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W050",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": 1.3998008966445923,
+        "shap_value": -0.5236870646476746,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W005",
+    "severity": "MEDIUM",
+    "risk_probability": 0.6726,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4296,
+    "isolation_forest_score": 0.1715,
+    "autoencoder_score": 0.0677,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W005",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 50731628.5,
+        "shap_value": 1.831406831741333,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W005",
+        "rank": 2,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.17146133710930447,
+        "shap_value": 0.6567758321762085,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W005",
+        "rank": 3,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.299591600894928,
+        "shap_value": -0.6149047613143921,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W005",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.2987949406953985,
+        "shap_value": -0.5297914743423462,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W005",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.4731597304344177,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W043",
+    "severity": "MEDIUM",
+    "risk_probability": 0.6659,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3815,
+    "isolation_forest_score": 0.596,
+    "autoencoder_score": 0.0814,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W043",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 33987447.5,
+        "shap_value": 1.920217752456665,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W043",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.8856441974639893,
+        "shap_value": -0.8928711414337158,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W043",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.5960039940079854,
+        "shap_value": 0.7128820419311523,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W043",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.188721875540867,
+        "shap_value": -0.5890427827835083,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W043",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.2546563148498535,
+        "shap_value": -0.5189089775085449,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W047",
+    "severity": "MEDIUM",
+    "risk_probability": 0.6458,
+    "risk_prediction": 1,
+    "deterministic_score": 0.5006,
+    "isolation_forest_score": 0.4226,
+    "autoencoder_score": 0.2843,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W047",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 54995000.0,
+        "shap_value": 1.9353070259094238,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W047",
+        "rank": 2,
+        "feature": "observations_per_tx",
+        "feature_value": 2.0,
+        "shap_value": -0.8958247303962708,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W047",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.42262908568007224,
+        "shap_value": 0.7206730842590332,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W047",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.9000861048698425,
+        "shap_value": -0.6868556141853333,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W047",
+        "rank": 5,
+        "feature": "country_entropy",
+        "feature_value": 1.0,
+        "shap_value": -0.5752707719802856,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W010",
+    "severity": "MEDIUM",
+    "risk_probability": 0.6284,
+    "risk_prediction": 1,
+    "deterministic_score": 0.2815,
+    "isolation_forest_score": 0.2172,
+    "autoencoder_score": 0.1014,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W010",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 36971713.0,
+        "shap_value": 1.931865930557251,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W010",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.11773662269115448,
+        "shap_value": -0.7813073396682739,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W010",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.2171885916951235,
+        "shap_value": 0.6468894481658936,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W010",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 0.5435644431995964,
+        "shap_value": -0.6096495985984802,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W010",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 1.0,
+        "shap_value": 0.41859930753707886,
+        "direction": "increases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W037",
+    "severity": "MEDIUM",
+    "risk_probability": 0.5885,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4466,
+    "isolation_forest_score": 0.3119,
+    "autoencoder_score": 0.2202,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W037",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 15250812.0,
+        "shap_value": 1.911125898361206,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W037",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.48719340562820435,
+        "shap_value": -0.9401150941848755,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W037",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.31191082299214173,
+        "shap_value": 0.6207008361816406,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W037",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.4056390622295665,
+        "shap_value": -0.5708716511726379,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W037",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.29479289054870605,
+        "shap_value": -0.5605909824371338,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W025",
+    "severity": "MEDIUM",
+    "risk_probability": 0.5646,
+    "risk_prediction": 1,
+    "deterministic_score": 0.3478,
+    "isolation_forest_score": 0.2896,
+    "autoencoder_score": 0.0314,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W025",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 36551116.0,
+        "shap_value": 1.8083670139312744,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W025",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.07891007512807846,
+        "shap_value": -0.7660526037216187,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W025",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.28961172037745936,
+        "shap_value": 0.6689850687980652,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W025",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.34105706214904785,
+        "shap_value": -0.5785845518112183,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W025",
+        "rank": 5,
+        "feature": "country_entropy",
+        "feature_value": 1.75,
+        "shap_value": -0.5692207217216492,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W018",
+    "severity": "MEDIUM",
+    "risk_probability": 0.5247,
+    "risk_prediction": 1,
+    "deterministic_score": 0.4319,
+    "isolation_forest_score": 0.6063,
+    "autoencoder_score": 0.1029,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W018",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 31123282.0,
+        "shap_value": 1.8607513904571533,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W018",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -1.198923110961914,
+        "shap_value": -0.8716709613800049,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W018",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.6063269943675564,
+        "shap_value": 0.6226271390914917,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W018",
+        "rank": 4,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.4533509612083435,
+        "shap_value": -0.6014924049377441,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W018",
+        "rank": 5,
+        "feature": "country_entropy",
+        "feature_value": 1.610577243331642,
+        "shap_value": -0.5493960380554199,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W030",
+    "severity": "MEDIUM",
+    "risk_probability": 0.5094,
+    "risk_prediction": 1,
+    "deterministic_score": 0.5263,
+    "isolation_forest_score": 0.3156,
+    "autoencoder_score": 0.0716,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W030",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 47161771.0,
+        "shap_value": 1.9466760158538818,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W030",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.14646640419960022,
+        "shap_value": -0.8738341331481934,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W030",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.31564977130450095,
+        "shap_value": 0.7422642707824707,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W030",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.5,
+        "shap_value": -0.6319085359573364,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W030",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.048104867339134216,
+        "shap_value": -0.6016607284545898,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W042",
+    "severity": "LOW",
+    "risk_probability": 0.4703,
+    "risk_prediction": 0,
+    "deterministic_score": 0.3143,
+    "isolation_forest_score": 0.225,
+    "autoencoder_score": 0.1372,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W042",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 22734269.0,
+        "shap_value": 1.8745081424713135,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W042",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.7976922392845154,
+        "shap_value": -0.9708336591720581,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W042",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.22499812247226225,
+        "shap_value": 0.6823661923408508,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W042",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.061278124459133,
+        "shap_value": -0.6214466094970703,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W042",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.43690693378448486,
+        "shap_value": -0.5451241135597229,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W019",
+    "severity": "LOW",
+    "risk_probability": 0.4605,
+    "risk_prediction": 0,
+    "deterministic_score": 0.494,
+    "isolation_forest_score": 0.3264,
+    "autoencoder_score": 0.0532,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W019",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 15681171.5,
+        "shap_value": 1.9078454971313477,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W019",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.37514621019363403,
+        "shap_value": -1.0348883867263794,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W019",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.3264159763836173,
+        "shap_value": 0.6535453796386719,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W019",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.0,
+        "shap_value": -0.6278504729270935,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W019",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.18215300142765045,
+        "shap_value": -0.5910930037498474,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W041",
+    "severity": "LOW",
+    "risk_probability": 0.4408,
+    "risk_prediction": 0,
+    "deterministic_score": 0.4439,
+    "isolation_forest_score": 0.4302,
+    "autoencoder_score": 0.4509,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W041",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 28731769.5,
+        "shap_value": 1.875481367111206,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W041",
+        "rank": 2,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.38405147194862366,
+        "shap_value": -0.9394322633743286,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W041",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.4301796135756098,
+        "shap_value": 0.6973183751106262,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W041",
+        "rank": 4,
+        "feature": "country_entropy",
+        "feature_value": 1.1981174211304033,
+        "shap_value": -0.5457650423049927,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W041",
+        "rank": 5,
+        "feature": "graphsage_dim_23",
+        "feature_value": 0.4638836979866028,
+        "shap_value": -0.5442871451377869,
+        "direction": "decreases_risk"
+      }
+    ]
+  },
+  {
+    "wallet_id": "W048",
+    "severity": "LOW",
+    "risk_probability": 0.0164,
+    "risk_prediction": 0,
+    "deterministic_score": 0.7042,
+    "isolation_forest_score": 0.6198,
+    "autoencoder_score": 0.3335,
+    "top_shap_factors": [
+      {
+        "wallet_id": "W048",
+        "rank": 1,
+        "feature": "median_sent_sats",
+        "feature_value": 0.0,
+        "shap_value": -3.6016170978546143,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W048",
+        "rank": 2,
+        "feature": "avg_sent_sats",
+        "feature_value": 0.0,
+        "shap_value": -0.8791724443435669,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W048",
+        "rank": 3,
+        "feature": "isolation_forest_anomaly_score",
+        "feature_value": 0.6197515728400781,
+        "shap_value": 0.6804153323173523,
+        "direction": "increases_risk"
+      },
+      {
+        "wallet_id": "W048",
+        "rank": 4,
+        "feature": "graphsage_dim_10",
+        "feature_value": -0.03746703267097473,
+        "shap_value": -0.5902988910675049,
+        "direction": "decreases_risk"
+      },
+      {
+        "wallet_id": "W048",
+        "rank": 5,
+        "feature": "observations_per_tx",
+        "feature_value": 2.0,
+        "shap_value": -0.5536919832229614,
+        "direction": "decreases_risk"
+      }
+    ]
+  }
+]
