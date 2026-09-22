@@ -47,6 +47,7 @@ def run_job_background(job_id: str, raw_dir: Path, output_dir: Path) -> None:
             raw_dir=raw_dir,
             output_dir=output_dir,
             artifact_dir=ARTIFACT_DIR,
+            job_id=job_id,
             progress_callback=on_progress,
         )
 

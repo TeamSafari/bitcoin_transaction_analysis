@@ -10,6 +10,7 @@ from typing import Any
 import pandas as pd
 
 from backend.config import OPTIONAL_RAW_FILES, REQUIRED_RAW_FILES
+from backend.database import get_result
 from backend.ingestion.csv_loader import load_csv
 from backend.ingestion.normalizer import normalize_dataset
 from backend.ingestion.validator import validate_dataset
@@ -38,6 +39,22 @@ def run_ingestion(raw_dir: Path) -> dict[str, pd.DataFrame]:
     load → validate schema/references → normalize types.
     """
     datasets = load_raw_dataset(raw_dir)
+    validate_dataset(datasets)
+    return normalize_dataset(datasets)
+
+
+def run_ingestion_from_db(job_id: str) -> dict[str, pd.DataFrame]:
+    """Load, validate, and normalize an uploaded job stored in SQLite."""
+    datasets: dict[str, pd.DataFrame] = {}
+    for filename in REQUIRED_RAW_FILES + OPTIONAL_RAW_FILES:
+        records = get_result(job_id, f"input/{Path(filename).stem}")
+        if records is not None:
+            datasets[Path(filename).stem] = pd.DataFrame(records)
+
+    missing = [name for name in REQUIRED_RAW_FILES if Path(name).stem not in datasets]
+    if missing:
+        raise FileNotFoundError(f"Missing database input artifacts for job {job_id}: {missing}")
+
     validate_dataset(datasets)
     return normalize_dataset(datasets)
 

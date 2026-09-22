@@ -7,7 +7,6 @@ Each function operates on a PipelineContext and writes artifacts to output_dir.
 from __future__ import annotations
 
 
-import json
 import logging
 from typing import Any, Dict, List, Tuple
 
@@ -28,7 +27,7 @@ from backend.graph.graph_engine import build_graph_edges
 from backend.graph.graph_features import calculate_graph_features
 from backend.graph.networkx_graph import build_wallet_graph
 from backend.ingestion.identity_resolution import resolve_identities
-from backend.ingestion.ingestion_pipeline import ingestion_report, run_ingestion
+from backend.ingestion.ingestion_pipeline import ingestion_report, run_ingestion, run_ingestion_from_db
 from backend.pipeline.context import PipelineContext
 from backend.risk.deterministic_engine import DeterministicRiskEngine
 from backend.risk.risk_engine import StatisticalRiskEngine
@@ -82,7 +81,11 @@ class Autoencoder(nn.Module):
 
 def stage_ingestion(ctx: PipelineContext) -> Dict[str, Any]:
     ctx.report_progress("Data Ingestion", 0.05)
-    ctx.datasets = run_ingestion(ctx.raw_dir)
+    ctx.datasets = (
+        run_ingestion_from_db(ctx.job_id)
+        if ctx.job_id
+        else run_ingestion(ctx.raw_dir)
+    )
     report = ingestion_report(ctx.datasets)
     logger.info(
         "Ingested %s wallets, %s transactions",
@@ -99,15 +102,12 @@ def stage_ingestion(ctx: PipelineContext) -> Dict[str, Any]:
 def stage_identity_resolution(ctx: PipelineContext) -> Dict[str, Any]:
     ctx.report_progress("Identity Resolution", 0.10)
     ctx.datasets, ctx.identity_resolution = resolve_identities(ctx.datasets)
-    out_file = ctx.identity_dir / "identity_resolution.csv"
-    ctx.identity_resolution.to_csv(out_file, index=False)
 
     dup_count = int(ctx.identity_resolution["duplicate_entity_flag"].sum())
     linked = int(ctx.identity_resolution["resolved_entity_id"].notna().sum())
     return {
         "wallets_linked_to_entities": linked,
         "duplicate_entity_flags": dup_count,
-        "output_file": str(out_file),
     }
 
 
@@ -124,11 +124,9 @@ def stage_graph_construction(ctx: PipelineContext) -> Dict[str, Any]:
     all_wallets = data["wallets"]["wallet_id"].astype(str).tolist()
 
     ctx.graph_edges = build_graph_edges(transactions, tx_inputs, tx_outputs)
-    ctx.graph_edges.to_csv(ctx.graphs_dir / "graph_edges.csv", index=False)
 
     graph = build_wallet_graph(ctx.graph_edges, all_wallets)
     ctx.graph_features = calculate_graph_features(graph)
-    ctx.graph_features.to_csv(ctx.graphs_dir / "graph_features.csv", index=False)
 
     return {"edge_count": len(ctx.graph_edges), "node_count": len(all_wallets)}
 
@@ -173,7 +171,6 @@ def stage_feature_engineering(ctx: PipelineContext) -> Dict[str, Any]:
     )
 
     ctx.wallet_features = merged
-    ctx.wallet_features.to_csv(ctx.features_dir / "wallet_features.csv", index=False)
 
     scaler_file = ctx.artifact_dir / "feature_scaler.pkl"
     if scaler_file.exists():
@@ -188,10 +185,7 @@ def stage_feature_engineering(ctx: PipelineContext) -> Dict[str, Any]:
 
     ctx.scaled_features = pd.DataFrame(scaled_values, columns=feature_cols)
     ctx.scaled_features.insert(0, "wallet_id", merged["wallet_id"])
-    ctx.scaled_features.to_csv(ctx.features_dir / "wallet_features_scaled.csv", index=False)
-
-    with open(ctx.features_dir / "feature_names.json", "w", encoding="utf-8") as f:
-        json.dump(feature_cols, f, indent=2)
+    ctx.feature_names = feature_cols
 
     return {"feature_count": len(feature_cols)}
 
@@ -205,10 +199,7 @@ def stage_rule_engine(ctx: PipelineContext) -> Dict[str, Any]:
     engine = DeterministicRiskEngine()
     data_to_score = ctx.wallet_features.merge(ctx.graph_features, on="wallet_id", how="left")
     ctx.deterministic_scores = engine.run(data_to_score)
-    ctx.deterministic_scores.to_csv(ctx.models_dir / "deterministic_scores.csv", index=False)
-
-    with open(ctx.models_dir / "deterministic_statistics.json", "w", encoding="utf-8") as f:
-        json.dump(engine.feature_statistics, f, indent=2)
+    ctx.deterministic_statistics = engine.feature_statistics
 
     flagged = int((ctx.deterministic_scores["deterministic_score"] >= REVIEW_THRESHOLD).sum())
     return {"deterministic_flagged_wallets": flagged}
@@ -272,7 +263,6 @@ def stage_gnn_engine(ctx: PipelineContext) -> Dict[str, Any]:
     emb_cols = [f"graphsage_dim_{i}" for i in range(embedding_dim)]
     ctx.embeddings = pd.DataFrame(embeddings, columns=emb_cols)
     ctx.embeddings.insert(0, "wallet_id", wallet_ids)
-    ctx.embeddings.to_csv(ctx.graphs_dir / "graphsage_embeddings.csv", index=False)
 
     return {"embedding_dimension": embedding_dim}
 
@@ -331,7 +321,6 @@ def stage_isolation_forest(ctx: PipelineContext) -> Dict[str, Any]:
             "isolation_forest_flag": (model.predict(x_data) == -1).astype(int),
         }
     )
-    ctx.isolation_scores.to_csv(ctx.models_dir / "isolation_forest_scores.csv", index=False)
     return {"anomaly_flags": int(ctx.isolation_scores["isolation_forest_flag"].sum())}
 
 
@@ -397,7 +386,6 @@ def stage_autoencoder(ctx: PipelineContext) -> Dict[str, Any]:
             "autoencoder_anomaly_score": norm,
         }
     )
-    ctx.autoencoder_scores.to_csv(ctx.models_dir / "autoencoder_scores.csv", index=False)
     return {"mean_reconstruction_error": float(recon_error.mean())}
 
 
@@ -430,7 +418,6 @@ def stage_feature_fusion(ctx: PipelineContext) -> Dict[str, Any]:
 
     cols_to_save = [c for c in fused.columns if c != "deterministic_evidence"]
     ctx.fused_features = fused
-    fused[cols_to_save].to_csv(ctx.models_dir / "base_fused_features.csv", index=False)
     return {"fused_feature_count": len(cols_to_save) - 1}
 
 
@@ -463,7 +450,6 @@ def stage_risk_model(ctx: PipelineContext) -> Dict[str, Any]:
             "risk_prediction": (probs >= threshold).astype(int),
         }
     )
-    ctx.risk_predictions.to_csv(ctx.models_dir / "risk_model_predictions.csv", index=False)
     return {"mean_risk_probability": float(probs.mean())}
 
 
@@ -505,8 +491,10 @@ def stage_fusion_scoring(ctx: PipelineContext) -> Dict[str, Any]:
 
     engine = StatisticalRiskEngine()
     ctx.fusion_scores = engine.run(score_input)
-    ctx.fusion_scores.to_csv(ctx.models_dir / "fusion_scores.csv", index=False)
-    engine.save_metadata(ctx.models_dir / "fusion_metadata.json")
+    ctx.fusion_metadata = {
+        "engine_type": "pure_statistical",
+        "source_weights": engine.source_weights,
+    }
 
     # Apply configurable review/hold thresholds to final routing
     routing = []
@@ -521,7 +509,7 @@ def stage_fusion_scoring(ctx: PipelineContext) -> Dict[str, Any]:
         routing.append({"wallet_id": str(row["wallet_id"]), "routing_action": action})
 
     routing_df = pd.DataFrame(routing)
-    routing_df.to_csv(ctx.models_dir / "routing_decisions.csv", index=False)
+    ctx.routing_decisions = routing_df
 
     return {
         "source_weights": engine.source_weights,
@@ -557,12 +545,12 @@ def stage_explainability(ctx: PipelineContext) -> Dict[str, Any]:
 
     shap_df = pd.DataFrame(shap_matrix, columns=feature_cols)
     shap_df.insert(0, "wallet_id", wallet_ids)
-    shap_df.to_csv(ctx.explainability_dir / "shap_values.csv", index=False)
+    ctx.shap_values = shap_df
 
     global_imp = np.abs(shap_matrix).mean(axis=0)
-    pd.DataFrame({"feature": feature_cols, "mean_absolute_shap": global_imp}).sort_values(
+    ctx.global_feature_importance = pd.DataFrame({"feature": feature_cols, "mean_absolute_shap": global_imp}).sort_values(
         "mean_absolute_shap", ascending=False
-    ).to_csv(ctx.explainability_dir / "global_feature_importance.csv", index=False)
+    )
 
     top_rows = []
     for i, wid in enumerate(wallet_ids):
@@ -583,7 +571,6 @@ def stage_explainability(ctx: PipelineContext) -> Dict[str, Any]:
             )
 
     ctx.shap_contributions = pd.DataFrame(top_rows)
-    ctx.shap_contributions.to_csv(ctx.explainability_dir / "top_feature_contributions.csv", index=False)
     return {"wallets_explained": len(wallet_ids)}
 
 
@@ -653,22 +640,6 @@ def stage_alerts(ctx: PipelineContext) -> Dict[str, Any]:
     severity_order = {"HIGH": 0, "MEDIUM": 1, "LOW": 2}
     alerts.sort(key=lambda a: (severity_order.get(a["severity"], 3), -a["risk_probability"]))
     ctx.alerts = alerts
-
-    pd.DataFrame(
-        [
-            {
-                "wallet_id": a["wallet_id"],
-                "severity": a["severity"],
-                "risk_probability": a["risk_probability"],
-                "fusion_score": a["fusion_score"],
-                "deterministic_score": a["deterministic_score"],
-            }
-            for a in alerts
-        ]
-    ).to_csv(ctx.alerts_dir / "alerts.csv", index=False)
-
-    with open(ctx.alerts_dir / "alerts.json", "w", encoding="utf-8") as f:
-        json.dump(alerts, f, indent=2)
 
     high = sum(1 for a in alerts if a["severity"] == "HIGH")
     med = sum(1 for a in alerts if a["severity"] == "MEDIUM")
