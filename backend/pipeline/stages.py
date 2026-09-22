@@ -6,7 +6,6 @@ Each function operates on a PipelineContext and writes artifacts to output_dir.
 
 from __future__ import annotations
 
-import backend.bootstrap  # noqa: F401
 
 import json
 import logging

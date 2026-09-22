@@ -18,7 +18,6 @@ End-to-end workflow:
 
 from __future__ import annotations
 
-import backend.bootstrap  # noqa: F401
 
 import argparse
 import json

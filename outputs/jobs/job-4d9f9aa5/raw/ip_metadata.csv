@@ -1,0 +1,101 @@
+ip_id,ip,country_code,country_name,region_name,city_name,latitude,longitude,zip_code,time_zone,asn,as_name,network_type
+IP0000001,24.232.20.228,AR,Argentina,Ciudad Autonoma de Buenos Aires,Buenos Aires,-34.603599,-58.381555,C1871,America/Argentina/Buenos_Aires,7303,Telecom Argentina S.A.,residential
+IP0000002,41.32.85.112,EG,Egypt,Al Qalyubiyah,Al Khankah,30.21035,31.36812,13763,Africa/Cairo,8452,Telecom Egypt,residential
+IP0000003,196.29.38.99,ZW,Zimbabwe,Manicaland,Mutare,-18.9707,32.67086,-,Africa/Harare,37183,Utande Internet Services (Pvt) Ltd,residential
+IP0000004,45.170.34.82,HN,Honduras,El Paraiso,Cuyali,13.88333,-86.55,13101,America/Tegucigalpa,267761,Onda Network S de R.L,datacenter
+IP0000005,5.45.141.16,JO,Jordan,Al 'Asimah,Amman,31.95522,35.94503,11931,Asia/Amman,9038,Al Bahrainia Al Urdunia Liltaknia Wa Alitisalat PLC. Co,residential
+IP0000006,102.178.208.156,BF,Burkina Faso,Kadiogo,Ouagadougou,12.364243,-1.538292,-,Africa/Ouagadougou,37577,Orange Burkina Faso,residential
+IP0000007,14.1.77.82,NU,Niue,Niue,Alofi,-19.05952,-169.91867,-,Pacific/Niue,14593,Space Exploration Technologies Corporation,residential
+IP0000008,154.12.105.4,HN,Honduras,Francisco Morazan,Tegucigalpa,14.081651,-87.207202,11101,America/Tegucigalpa,273189,CA Network S.A. de C.V.,residential
+IP0000009,109.200.187.187,YE,Yemen,'Adan,Al Mansurah,12.86019,44.98166,-,Asia/Aden,30873,Public Telecommunication Corporation,datacenter
+IP0000010,102.23.6.13,BF,Burkina Faso,Kadiogo,Ouagadougou,12.364243,-1.538292,-,Africa/Ouagadougou,36924,GVA Cote d'Ivoire SAS,mobile
+IP0000011,46.23.120.243,JO,Jordan,Al 'Asimah,Amman,31.95522,35.94503,11931,Asia/Amman,9038,Al Bahrainia Al Urdunia Liltaknia Wa Alitisalat PLC. Co,business
+IP0000012,45.160.188.219,CL,Chile,Libertador General Bernardo O'Higgins,Chimbarongo,-34.7,-71.05,3090000,America/Santiago,266887,Sociedad Gamacon Limitada,residential
+IP0000013,202.59.4.244,NU,Niue,Niue,Alofi,-19.05952,-169.91867,-,Pacific/Niue,10025,The IUSN Foundation,residential
+IP0000014,23.47.182.170,AR,Argentina,Ciudad Autonoma de Buenos Aires,Buenos Aires,-34.603599,-58.381555,C1871,America/Argentina/Buenos_Aires,16625,Akamai Technologies Inc.,residential
+IP0000015,185.126.144.227,LA,Lao People's Democratic Republic,Viangchan,Vientiane,17.966798,102.599177,01000,Asia/Vientiane,24337,Skytelecom Transit Provider and ISP in Vientiene.,business
+IP0000016,31.45.249.165,HR,Croatia,Grad Zagreb,Zagreb,45.814397,15.978012,10020,Europe/Zagreb,12810,A1 Hrvatska d.o.o.,residential
+IP0000017,69.57.251.72,AG,Antigua and Barbuda,Saint John,Saint John's,17.11667,-61.85,-,America/Antigua,11139,Cable & Wireless Dominica,residential
+IP0000018,94.124.159.182,YT,Mayotte,Mamoudzou,Mamoudzou,-12.77944,45.22722,97600,Indian/Mayotte,51110,Idom Technologies SAS,residential
+IP0000019,196.201.22.49,ZW,Zimbabwe,Manicaland,Mutare,-18.9707,32.67086,-,Africa/Harare,37332,Zimbabwe Online,business
+IP0000020,108.60.238.111,BS,Bahamas,New Providence,Nassau,25.058341,-77.343091,-,America/Nassau,8014,Bahamas Telecommunications Corporation,datacenter
+IP0000021,37.60.147.130,PS,"Palestine, State of",Ramallah,Ramallah,31.89502,35.18459,-,Asia/Hebron,51407,Mada Al-Arab General Services Company,residential
+IP0000022,8.242.43.135,BR,Brazil,Sao Paulo,Cotia,-23.603518,-46.919145,06600-000,America/Sao_Paulo,3356,Level 3 Parent LLC,residential
+IP0000023,46.33.220.39,ME,Montenegro,Podgorica,Podgorica,42.441153,19.263437,81000,Europe/Podgorica,8585,Crnogorski Telekom a.d.Podgorica,residential
+IP0000024,31.28.134.109,CZ,Czechia,Pardubicky kraj,Policka,49.714611,16.265018,572 01,Europe/Prague,15425,Poda A.S.,business
+IP0000025,43.168.172.156,LA,Lao People's Democratic Republic,Viangchan,Vientiane,17.966798,102.599177,01000,Asia/Vientiane,139341,ACE,datacenter
+IP0000026,2.18.20.245,BR,Brazil,Sao Paulo,Sao Paulo,-23.547121,-46.637186,01000-000,America/Sao_Paulo,20940,Akamai International B.V.,residential
+IP0000027,179.65.154.248,WF,Wallis and Futuna,Uvea,Mata-Utu,-13.28163,-176.17453,98600,Pacific/Wallis,14593,Space Exploration Technologies Corporation,business
+IP0000028,185.227.132.94,LA,Lao People's Democratic Republic,Viangchan,Vientiane,17.966798,102.599177,01000,Asia/Vientiane,136787,PacketHub S.A.,residential
+IP0000029,31.146.33.177,GE,Georgia,K'akheti,Akhmeta,42.03111,45.2075,0900,Asia/Tbilisi,35805,JSC Silknet,mobile
+IP0000030,201.220.15.216,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch Part),Philipsburg,18.026,-63.04582,-,America/Lower_Princes,27781,Smitcoms N.V.,residential
+IP0000031,23.205.247.9,AR,Argentina,Ciudad Autonoma de Buenos Aires,Buenos Aires,-34.603599,-58.381555,C1871,America/Argentina/Buenos_Aires,16625,Akamai Technologies Inc.,business
+IP0000032,5.45.140.149,JO,Jordan,Irbid,Irbid,32.55556,35.85,21110,Asia/Amman,9038,Al Bahrainia Al Urdunia Liltaknia Wa Alitisalat PLC. Co,residential
+IP0000033,200.0.22.63,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch Part),Philipsburg,18.026,-63.04582,-,America/Lower_Princes,27974,Association OCIX (Open Caribbean Internet Exchange),datacenter
+IP0000034,109.200.165.40,YE,Yemen,Hadramawt,At Tahalif,15.93786,48.7864,-,Asia/Aden,30873,Public Telecommunication Corporation,residential
+IP0000035,31.30.137.176,CZ,Czechia,"Praha, Hlavni mesto",Prague,50.087936,14.420798,150 00,Europe/Prague,16019,Vodafone Czech Republic A.S.,residential
+IP0000036,83.198.124.198,RE,Reunion,Reunion,Le Port,-20.937219,55.291541,97420,Indian/Reunion,3215,Orange S.A.,residential
+IP0000037,5.178.140.194,GE,Georgia,Tbilisi,Tbilisi,41.69392,44.833528,0100,Asia/Tbilisi,16010,Magticom Ltd.,residential
+IP0000038,5.173.16.10,PL,Poland,Lubelskie,Lublin,51.24998,22.566675,20-960,Europe/Warsaw,39603,P4 Sp. Z O.O.,residential
+IP0000039,23.26.102.141,HR,Croatia,Grad Zagreb,Zagreb,45.814397,15.978012,10020,Europe/Zagreb,212238,DataCamp Limited,mobile
+IP0000040,5.178.203.79,GE,Georgia,Tbilisi,Tbilisi,41.69392,44.833528,0100,Asia/Tbilisi,16010,Magticom Ltd.,business
+IP0000041,14.137.50.56,NU,Niue,Niue,Alofi,-19.05952,-169.91867,-,Pacific/Niue,135409,Kacific Broadband Satellites Pte Ltd,residential
+IP0000042,103.236.129.16,TL,Timor-Leste,Dili,Dili,-8.55861,125.57361,-,Asia/Dili,151605,Sacomtel Lda.,business
+IP0000043,31.146.134.188,GE,Georgia,Kvemo Kartli,Rust'avi,41.54949,44.99323,3700,Asia/Tbilisi,35805,JSC Silknet,business
+IP0000044,78.108.235.136,RE,Reunion,Reunion,Le Tampon,-21.28309,55.51802,97430,Indian/Reunion,34306,Societe Reunionnaise du Radiotelephone SCS,residential
+IP0000045,77.222.26.192,ME,Montenegro,Pljevlja,Crna Gora,43.2161,19.0053,84210,Europe/Podgorica,8585,Crnogorski Telekom a.d.Podgorica,residential
+IP0000046,94.26.213.219,YE,Yemen,Amanat al 'Asimah,Qaryat al Qabil,15.45033,44.12768,-,Asia/Aden,30873,Public Telecommunication Corporation,business
+IP0000047,5.133.153.9,BA,Bosnia and Herzegovina,Federacija Bosne i Hercegovine,Livno,43.82694,17.00778,80208,Europe/Sarajevo,20875,JP HT D.D. Mostar,residential
+IP0000048,160.236.195.79,TL,Timor-Leste,Dili,Dili,-8.55861,125.57361,-,Asia/Dili,136011,Raphvision Electronic Unipessoal Lda,residential
+IP0000049,37.8.0.35,PS,"Palestine, State of",Nablus,Bayt Wazan,32.23105,35.21576,-,Asia/Hebron,12975,Palestine Telecommunications Company (Paltel),residential
+IP0000050,102.178.243.5,BF,Burkina Faso,Passore,Yako,12.96667,-2.26667,-,Africa/Ouagadougou,37577,Orange Burkina Faso,residential
+IP0000051,180.189.161.217,TL,Timor-Leste,Dili,Dili,-8.55861,125.57361,-,Asia/Dili,38077,Timor Telecom SA,residential
+IP0000052,31.30.97.174,CZ,Czechia,"Praha, Hlavni mesto",Prague,50.087936,14.420798,150 00,Europe/Prague,16019,Vodafone Czech Republic A.S.,mobile
+IP0000053,5.152.133.255,CZ,Czechia,Plzensky kraj,Susice,49.23106,13.52018,342 01,Europe/Prague,197296,United Networks SE,business
+IP0000054,41.33.81.34,EG,Egypt,Al Jizah,Madinat Sittah Uktubar,29.81667,31.05,12566,Africa/Cairo,8452,Telecom Egypt,business
+IP0000055,2.17.45.48,BR,Brazil,Sao Paulo,Sao Paulo,-23.547121,-46.637186,01000-000,America/Sao_Paulo,20940,Akamai International B.V.,datacenter
+IP0000056,172.225.203.157,BS,Bahamas,New Providence,Nassau,25.058341,-77.343091,-,America/Nassau,36183,Akamai Technologies Inc.,residential
+IP0000057,5.172.245.142,PL,Poland,Mazowieckie,Warsaw,52.22977,21.01178,04-175,Europe/Warsaw,8374,Polkomtel Sp. z o.o.,datacenter
+IP0000058,168.228.193.11,HN,Honduras,Santa Barbara,Santa Barbara,14.91667,-88.23333,22101,America/Tegucigalpa,263725,MultiCable de Honduras,residential
+IP0000059,190.124.216.26,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch Part),Philipsburg,18.026,-63.04582,-,America/Lower_Princes,27781,Smitcoms N.V.,residential
+IP0000060,102.178.213.249,BF,Burkina Faso,Oubritenga,Ziniare,12.58222,-1.29833,-,Africa/Ouagadougou,37577,Orange Burkina Faso,residential
+IP0000061,92.142.152.176,YT,Mayotte,Chiconi,Chiconi,-12.83333,45.11056,97670,Indian/Mayotte,3215,Orange S.A.,business
+IP0000062,31.13.166.83,PS,"Palestine, State of",Ramallah,Ramallah,31.89502,35.18459,-,Asia/Hebron,51407,Mada Al-Arab General Services Company,datacenter
+IP0000063,49.156.50.91,NU,Niue,Niue,Alofi,-19.05952,-169.91867,-,Pacific/Niue,55885,No. 1 Commercial Center,datacenter
+IP0000064,31.216.188.142,BA,Bosnia and Herzegovina,Republika Srpska,Bijeljina,44.75694,19.21611,76300,Europe/Sarajevo,21107,Blicnet d.o.o. Banja Luka,residential
+IP0000065,154.119.95.223,ZW,Zimbabwe,Harare,Harare,-17.82935,31.05389,-,Africa/Harare,37123,TeleContract Pvt Ltd,residential
+IP0000066,5.45.142.162,JO,Jordan,Az Zarqa',Zarqa,32.07275,36.08796,13110,Asia/Amman,9038,Al Bahrainia Al Urdunia Liltaknia Wa Alitisalat PLC. Co,residential
+IP0000067,3.174.226.22,PL,Poland,Mazowieckie,Warsaw,52.22977,21.01178,05-077,Europe/Warsaw,16509,Amazon.com Inc.,mobile
+IP0000068,24.51.86.238,BS,Bahamas,New Providence,Nassau,25.058341,-77.343091,-,America/Nassau,15146,Cable Bahamas,residential
+IP0000069,69.57.228.2,AG,Antigua and Barbuda,Saint John,Saint John's,17.11667,-61.85,-,America/Antigua,11139,Cable & Wireless Dominica,residential
+IP0000070,205.138.16.210,AG,Antigua and Barbuda,Saint John,Saint John's,17.11667,-61.85,-,America/Antigua,3561,CenturyLink Communications LLC,residential
+IP0000071,117.20.36.107,WF,Wallis and Futuna,Uvea,Mata-Utu,-13.28163,-176.17453,98600,Pacific/Wallis,45879,Orange Wallis & Futuna,residential
+IP0000072,23.175.40.177,AR,Argentina,Cordoba,Sebastian Elcano,-30.16105,-63.5936,X5231,America/Argentina/Cordoba,266777,Doval Manuel Angel (iNetGaming),residential
+IP0000073,38.54.46.255,CL,Chile,Region Metropolitana de Santiago,Santiago,-33.426498,-70.566522,8320000,America/Santiago,63139,bEdge Co Limited,residential
+IP0000074,196.43.97.83,ZW,Zimbabwe,Harare,Harare,-17.82935,31.05389,-,Africa/Harare,37183,Utande Internet Services (Pvt) Ltd,residential
+IP0000075,31.176.191.94,BA,Bosnia and Herzegovina,Federacija Bosne i Hercegovine,Banovici,44.40528,18.52417,75275,Europe/Sarajevo,9146,BH Telecom d.d. Sarajevo,residential
+IP0000076,41.33.46.163,EG,Egypt,Al Jizah,Awsim,30.12303,31.13571,12581,Africa/Cairo,8452,Telecom Egypt,datacenter
+IP0000077,31.204.219.161,ME,Montenegro,Andrijevica,Andrijevica,42.7339,19.7919,84320,Europe/Podgorica,8585,Crnogorski Telekom a.d.Podgorica,residential
+IP0000078,46.161.127.236,ME,Montenegro,Podgorica,Podgorica,42.441153,19.263437,81000,Europe/Podgorica,8585,Crnogorski Telekom a.d.Podgorica,unknown
+IP0000079,5.173.70.233,PL,Poland,Opolskie,Olesno,50.87698,18.42094,46-300,Europe/Warsaw,39603,P4 Sp. Z O.O.,residential
+IP0000080,190.123.17.104,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch Part),Philipsburg,18.026,-63.04582,-,America/Lower_Princes,52389,SSCS BV,residential
+IP0000081,63.143.105.23,AG,Antigua and Barbuda,Saint John,Saint John's,17.11667,-61.85,-,America/Antigua,396304,Antigua Wireless Ventures Ltd,residential
+IP0000082,35.109.97.140,CL,Chile,Region Metropolitana de Santiago,Santiago,-33.426498,-70.566522,8320000,America/Santiago,699,Amazon Technologies Inc.,mobile
+IP0000083,206.138.20.38,BS,Bahamas,South Eleuthera,Tarpum Bay,24.97,-76.18157,-,America/Nassau,15146,Cable Bahamas,residential
+IP0000084,102.135.229.165,YT,Mayotte,Mamoudzou,Mamoudzou,-12.77944,45.22722,97600,Indian/Mayotte,51110,Idom Technologies SAS,residential
+IP0000085,27.125.194.59,WF,Wallis and Futuna,Uvea,Mata-Utu,-13.28163,-176.17453,98600,Pacific/Wallis,45879,Orange Wallis & Futuna,residential
+IP0000086,46.43.78.25,PS,"Palestine, State of",Hebron,Qalqas,31.49212,35.09535,-,Asia/Hebron,51407,Mada Al-Arab General Services Company,unknown
+IP0000087,38.54.20.128,CL,Chile,Region Metropolitana de Santiago,Santiago,-33.426498,-70.566522,8320000,America/Santiago,154177,Light Node Limited,residential
+IP0000088,83.198.134.172,RE,Reunion,Reunion,Le Port,-20.937219,55.291541,97420,Indian/Reunion,3215,Orange S.A.,residential
+IP0000089,103.235.111.146,WF,Wallis and Futuna,Uvea,Mata-Utu,-13.28163,-176.17453,98600,Pacific/Wallis,45879,Orange Wallis & Futuna,residential
+IP0000090,103.1.28.13,LA,Lao People's Democratic Republic,Khammouan,Thakhek,17.41027,104.83068,12000,Asia/Vientiane,131267,Star Telecom,residential
+IP0000091,5.39.136.104,HR,Croatia,Istarska zupanija,Pula,44.868429,13.847821,52100,Europe/Zagreb,34594,Telemach Hrvatska d.o.o.,residential
+IP0000092,13.104.80.113,BR,Brazil,Sao Paulo,Campinas,-22.905743,-47.060999,13000-000,America/Sao_Paulo,8069,Microsoft Corporation,residential
+IP0000093,41.33.15.158,EG,Egypt,Al Qahirah,Cairo,30.06263,31.24967,11511,Africa/Cairo,8452,Telecom Egypt,unknown
+IP0000094,153.67.90.159,YT,Mayotte,Mamoudzou,Mamoudzou,-12.77944,45.22722,97600,Indian/Mayotte,14593,Space Exploration Technologies Corporation,residential
+IP0000095,179.49.112.148,HN,Honduras,Santa Barbara,Santa Barbara,14.91667,-88.23333,22101,America/Tegucigalpa,262234,Asociacion de Servicio de Internet S. de RL.,residential
+IP0000096,103.112.36.86,TL,Timor-Leste,Aileu,Kitutu,-8.58833,125.609,-,Asia/Dili,38077,Timor Telecom SA,residential
+IP0000097,83.198.121.31,RE,Reunion,Reunion,Reunion,-21.06667,55.26667,97426,Indian/Reunion,3215,Orange S.A.,business
+IP0000098,31.45.199.97,HR,Croatia,Zadarska zupanija,Biograd na Moru,43.94333,15.45194,23210,Europe/Zagreb,12810,A1 Hrvatska d.o.o.,mobile
+IP0000099,5.255.19.194,YE,Yemen,Ibb,Ibb,13.96667,44.18333,-,Asia/Aden,30873,Public Telecommunication Corporation,residential
+IP0000100,5.43.115.157,BA,Bosnia and Herzegovina,Federacija Bosne i Hercegovine,Busovaca,44.0975,17.87889,72260,Europe/Sarajevo,42560,Telemach BH d.o.o. Sarajevo,residential
