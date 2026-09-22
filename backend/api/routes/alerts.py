@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
@@ -15,12 +14,7 @@ router = APIRouter(prefix="/api/v1", tags=["Alerts"])
 
 
 def _load_alerts(loader, job_id: str) -> AlertsResponse:
-    alerts_file = loader.data_root / "alerts" / "alerts.json"
-    if not alerts_file.exists():
-        return AlertsResponse(job_id=job_id, status="completed", total_alerts=0, alerts=[])
-
-    with open(alerts_file, encoding="utf-8") as f:
-        alerts_data = json.load(f)
+    alerts_data = loader.alerts
 
     return AlertsResponse(
         job_id=job_id,

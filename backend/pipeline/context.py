@@ -19,6 +19,7 @@ class PipelineContext:
     raw_dir: Path
     output_dir: Path
     artifact_dir: Path
+    job_id: Optional[str] = None
     progress_callback: Optional[ProgressCallback] = None
 
     # Ingestion
@@ -28,6 +29,7 @@ class PipelineContext:
     # Features & graph
     wallet_features: Optional[pd.DataFrame] = None
     scaled_features: Optional[pd.DataFrame] = None
+    feature_names: List[str] = field(default_factory=list)
     graph_edges: Optional[pd.DataFrame] = None
     graph_features: Optional[pd.DataFrame] = None
     embeddings: Optional[pd.DataFrame] = None
@@ -41,9 +43,14 @@ class PipelineContext:
     fused_features: Optional[pd.DataFrame] = None
     risk_predictions: Optional[pd.DataFrame] = None
     fusion_scores: Optional[pd.DataFrame] = None
+    routing_decisions: Optional[pd.DataFrame] = None
 
     # Explainability & alerts
     shap_contributions: Optional[pd.DataFrame] = None
+    shap_values: Optional[pd.DataFrame] = None
+    global_feature_importance: Optional[pd.DataFrame] = None
+    deterministic_statistics: Dict[str, Any] = field(default_factory=dict)
+    fusion_metadata: Dict[str, Any] = field(default_factory=dict)
     alerts: List[Dict[str, Any]] = field(default_factory=list)
 
     @property

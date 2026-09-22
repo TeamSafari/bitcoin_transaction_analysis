@@ -28,10 +28,8 @@ class ExplainabilityEngine:
 
     def explain_wallet_risk(self, wallet_id: str) -> Dict[str, Any]:
         factors: List[Dict[str, Any]] = []
-        shap_file = self.loader.data_root / "explainability" / "top_feature_contributions.csv"
-
-        if shap_file.exists():
-            shap_df = pd.read_csv(shap_file)
+        try:
+            shap_df = self.loader.shap_contributions
             w_shap = shap_df[shap_df["wallet_id"].astype(str) == str(wallet_id)]
             for _, row in w_shap.iterrows():
                 fname = str(row["feature"])
@@ -48,6 +46,8 @@ class ExplainabilityEngine:
                         "percentile_rank": round(float(min(100.0, max(0.0, abs(shap_val) * 20))), 2),
                     }
                 )
+        except FileNotFoundError:
+            pass
 
         try:
             det_score = float(self.loader.deterministic_scores.loc[wallet_id]["deterministic_score"])

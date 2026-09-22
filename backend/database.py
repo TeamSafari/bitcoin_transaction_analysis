@@ -5,12 +5,26 @@ SQLite Database Layer for Bitcoin Forensics Job Management
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 import sqlite3
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from backend.config import DB_PATH as DEFAULT_DB_PATH
+
+
+def _json_safe(value: Any) -> Any:
+    """Convert pandas/NumPy values into strict JSON-compatible values."""
+    if hasattr(value, "item"):
+        return _json_safe(value.item())
+    if isinstance(value, float) and math.isnan(value):
+        return None
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    return value
 
 
 def get_db_connection(db_path: Optional[Path] = None) -> sqlite3.Connection:
@@ -23,7 +37,7 @@ def get_db_connection(db_path: Optional[Path] = None) -> sqlite3.Connection:
 
 
 def init_db(db_path: Optional[Path] = None) -> None:
-    """Initialize the jobs table if it doesn't exist."""
+    """Initialize the job and pipeline result tables if they don't exist."""
     conn = get_db_connection(db_path)
     try:
         with conn:
@@ -54,6 +68,24 @@ def init_db(db_path: Optional[Path] = None) -> None:
                 """
                 CREATE INDEX IF NOT EXISTS idx_jobs_created_at 
                 ON jobs(created_at DESC)
+                """
+            )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS job_results (
+                    job_id TEXT NOT NULL,
+                    artifact_name TEXT NOT NULL,
+                    payload TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    PRIMARY KEY (job_id, artifact_name),
+                    FOREIGN KEY (job_id) REFERENCES jobs(job_id) ON DELETE CASCADE
+                )
+                """
+            )
+            conn.execute(
+                """
+                CREATE INDEX IF NOT EXISTS idx_job_results_job_id
+                ON job_results(job_id)
                 """
             )
     finally:
@@ -189,5 +221,53 @@ def list_jobs(
                     pass
             results.append(data)
         return results
+    finally:
+        conn.close()
+
+
+def save_result(
+    job_id: str,
+    artifact_name: str,
+    payload: Any,
+    db_path: Optional[Path] = None,
+) -> None:
+    """Store one JSON-serializable pipeline artifact for a job."""
+    init_db(db_path)
+    conn = get_db_connection(db_path)
+    try:
+        with conn:
+            conn.execute(
+                """
+                INSERT INTO job_results (job_id, artifact_name, payload, created_at)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(job_id, artifact_name) DO UPDATE SET
+                    payload = excluded.payload,
+                    created_at = excluded.created_at
+                """,
+                (
+                    job_id,
+                    artifact_name,
+                    json.dumps(_json_safe(payload), allow_nan=False, default=str),
+                    datetime.now(timezone.utc).isoformat(),
+                ),
+            )
+    finally:
+        conn.close()
+
+
+def get_result(
+    job_id: str,
+    artifact_name: str,
+    db_path: Optional[Path] = None,
+) -> Optional[Any]:
+    """Retrieve one stored pipeline artifact."""
+    init_db(db_path)
+    conn = get_db_connection(db_path)
+    try:
+        row = conn.execute(
+            "SELECT payload FROM job_results WHERE job_id = ? AND artifact_name = ?",
+            (job_id, artifact_name),
+        ).fetchone()
+        return json.loads(row["payload"]) if row else None
     finally:
         conn.close()

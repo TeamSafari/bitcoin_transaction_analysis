@@ -3,16 +3,19 @@
 from __future__ import annotations
 
 import json
+import io
 import uuid
 from pathlib import Path
 from typing import List, Optional
+
+import pandas as pd
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 
 from backend.api.schemas import JobStatusResponse, JobSummaryResponse, JobUploadResponse
 from backend.api.worker import run_job_background
-from backend.config import JOBS_DIR, OPTIONAL_RAW_FILES, REQUIRED_RAW_FILES
-from backend.database import create_job, get_job, list_jobs
+from backend.config import OPTIONAL_RAW_FILES, REQUIRED_RAW_FILES
+from backend.database import create_job, get_job, get_result, list_jobs, save_result
 
 router = APIRouter(prefix="/api/v1/jobs", tags=["Jobs"])
 
@@ -52,27 +55,27 @@ async def upload_raw_csv_job(request: Request, background_tasks: BackgroundTasks
         )
 
     job_id = f"job-{uuid.uuid4().hex[:8]}"
-    job_dir = JOBS_DIR / job_id
-    raw_dir = job_dir / "raw"
-    output_dir = job_dir / "results"
-    raw_dir.mkdir(parents=True, exist_ok=True)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    try:
-        for filename, up_file in uploaded.items():
-            content = await up_file.read()  # type: ignore[union-attr]
-            (raw_dir / filename).write_bytes(content)
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Failed to save uploads: {exc}") from exc
-
     create_job(
         job_id=job_id,
-        raw_dir=str(raw_dir),
-        output_dir=str(output_dir),
+        raw_dir="",
+        output_dir="",
         status="processing",
         current_stage="Data Ingestion",
         progress=5,
     )
+
+    try:
+        for filename, up_file in uploaded.items():
+            content = await up_file.read()  # type: ignore[union-attr]
+            dataset = pd.read_csv(io.BytesIO(content))
+            if dataset.empty:
+                raise ValueError(f"Uploaded CSV is empty: {filename}")
+            save_result(job_id, f"input/{Path(filename).stem}", dataset.to_dict(orient="records"))
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Failed to store uploads: {exc}") from exc
+
+    raw_dir = Path("")
+    output_dir = Path("")
 
     background_tasks.add_task(run_job_background, job_id, raw_dir, output_dir)
 
@@ -135,6 +138,9 @@ async def get_job_manifest(job_id: str):
     job = get_job(job_id)
     if not job:
         raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found.")
+    manifest = get_result(job_id, "manifest")
+    if manifest is not None:
+        return manifest
     manifest_path = Path(job["output_dir"]) / "reports" / "pipeline_manifest.json"
     if not manifest_path.exists():
         raise HTTPException(status_code=404, detail="Manifest not found for this job.")

@@ -28,7 +28,10 @@ import traceback
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional
 
+import pandas as pd
+
 from backend.config import ARTIFACT_DIR, RAW_DATA_DIR
+from backend.database import save_result
 from backend.pipeline.context import PipelineContext, ProgressCallback
 from backend.pipeline import stages
 
@@ -62,18 +65,21 @@ class Orchestrator:
         raw_dir: Path,
         output_dir: Path,
         artifact_dir: Optional[Path] = None,
+        job_id: Optional[str] = None,
         progress_callback: Optional[ProgressCallback] = None,
     ):
         self.ctx = PipelineContext(
             raw_dir=Path(raw_dir),
             output_dir=Path(output_dir),
             artifact_dir=Path(artifact_dir) if artifact_dir else ARTIFACT_DIR,
+            job_id=job_id,
             progress_callback=progress_callback,
         )
 
     def execute(self) -> Dict[str, Any]:
         start = time.time()
-        self.ctx.ensure_dirs()
+        if not self.ctx.job_id:
+            self.ctx.ensure_dirs()
         stage_reports: Dict[str, Any] = {}
 
         logger.info(
@@ -109,18 +115,62 @@ class Orchestrator:
             "stage_reports": stage_reports,
         }
 
-        manifest_path = self.ctx.reports_dir / "pipeline_manifest.json"
-        with open(manifest_path, "w", encoding="utf-8") as f:
-            json.dump(manifest, f, indent=2)
+        if self.ctx.job_id:
+            self._persist_results(manifest)
+
+        if not self.ctx.job_id:
+            manifest_path = self.ctx.reports_dir / "pipeline_manifest.json"
+            with open(manifest_path, "w", encoding="utf-8") as f:
+                json.dump(manifest, f, indent=2)
 
         logger.info("Pipeline completed in %.2fs", elapsed)
         return manifest
+
+    def _persist_results(self, manifest: Dict[str, Any]) -> None:
+        """Persist computed pipeline outputs for API consumers."""
+        artifacts = {
+            "datasets": self.ctx.datasets,
+            "identity_resolution": self.ctx.identity_resolution,
+            "graph_edges": self.ctx.graph_edges,
+            "graph_features": self.ctx.graph_features,
+            "wallet_features": self.ctx.wallet_features,
+            "wallet_features_scaled": self.ctx.scaled_features,
+            "feature_names": self.ctx.feature_names,
+            "graphsage_embeddings": self.ctx.embeddings,
+            "deterministic_scores": self.ctx.deterministic_scores,
+            "isolation_forest_scores": self.ctx.isolation_scores,
+            "autoencoder_scores": self.ctx.autoencoder_scores,
+            "base_fused_features": self.ctx.fused_features,
+            "risk_model_predictions": self.ctx.risk_predictions,
+            "fusion_scores": self.ctx.fusion_scores,
+            "routing_decisions": self.ctx.routing_decisions,
+            "alerts": self.ctx.alerts,
+            "shap_contributions": self.ctx.shap_contributions,
+            "shap_values": self.ctx.shap_values,
+            "global_feature_importance": self.ctx.global_feature_importance,
+            "deterministic_statistics": self.ctx.deterministic_statistics,
+            "fusion_metadata": self.ctx.fusion_metadata,
+        }
+        for name, value in artifacts.items():
+            if name == "datasets":
+                for dataset_name, dataset in value.items():
+                    save_result(
+                        self.ctx.job_id,
+                        f"datasets/{dataset_name}",
+                        dataset.to_dict(orient="records"),
+                    )
+            elif isinstance(value, pd.DataFrame):
+                save_result(self.ctx.job_id, name, value.to_dict(orient="records"))
+            elif value is not None:
+                save_result(self.ctx.job_id, name, value)
+        save_result(self.ctx.job_id, "manifest", manifest)
 
 
 def run_pipeline(
     raw_dir: str | Path,
     output_dir: str | Path,
     artifact_dir: Optional[str | Path] = None,
+    job_id: Optional[str] = None,
     progress_callback: Optional[ProgressCallback] = None,
 ) -> Dict[str, Any]:
     """Run the full forensic pipeline and return the execution manifest."""
@@ -128,6 +178,7 @@ def run_pipeline(
         raw_dir=Path(raw_dir),
         output_dir=Path(output_dir),
         artifact_dir=Path(artifact_dir) if artifact_dir else None,
+        job_id=job_id,
         progress_callback=progress_callback,
     )
     return orchestrator.execute()

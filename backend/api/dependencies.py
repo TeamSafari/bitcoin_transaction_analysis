@@ -59,7 +59,7 @@ def get_services_for_job(
             ),
         )
 
-    loader = DataLoader(Path(job["output_dir"]))
+    loader = DataLoader(Path(job["output_dir"]), job_id=job_id)
     influence = GNNInfluenceCalculator(loader)
     pattern = PatternDetector(loader, raw_dir=job.get("raw_dir"))
     explain = ExplainabilityEngine(loader)
