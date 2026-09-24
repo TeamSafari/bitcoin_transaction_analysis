@@ -116,3 +116,10 @@ class AlertsResponse(BaseModel):
     status: str
     total_alerts: int
     alerts: List[Dict[str, Any]]
+
+
+class LLMExplanationResponse(BaseModel):
+    wallet_id: str
+    explanation: str
+    model_used: str = "Qwen2.5-1.5B-Instruct"
+    cached: bool = False

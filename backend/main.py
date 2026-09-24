@@ -24,7 +24,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api.routes import alerts, explainability, graph, health, jobs, patterns
+from backend.api.routes import alerts, explainability, graph, health, jobs, llm_explain, patterns
 from backend.config import ARTIFACT_DIR
 from backend.database import init_db
 
@@ -81,6 +81,7 @@ app.include_router(jobs.router)
 app.include_router(graph.router)
 app.include_router(alerts.router)
 app.include_router(explainability.router)
+app.include_router(llm_explain.router)
 app.include_router(patterns.router)
 app.include_router(health.router)
 

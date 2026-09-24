@@ -11,6 +11,7 @@ RAW_DATA_DIR = DATA_DIR / "raw"
 OUTPUT_DIR = PROJECT_ROOT / "outputs"
 JOBS_DIR = OUTPUT_DIR / "jobs"
 ARTIFACT_DIR = PROJECT_ROOT / "backend" / "models" / "artifacts"
+LLM_MODEL_DIR = ARTIFACT_DIR / "llm"
 DB_PATH = OUTPUT_DIR / "jobs.db"
 
 REQUIRED_RAW_FILES = [

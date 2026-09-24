@@ -24,3 +24,19 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+*/__pycache__
+
+# SQLite Databases
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+outputs/*.db
+
+# Large Language Models / GGUF artifacts (>100MB)
+*.gguf
+backend/models/artifacts/llm/*.gguf
+!backend/models/artifacts/llm/.gitkeep

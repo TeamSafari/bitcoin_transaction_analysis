@@ -88,6 +88,18 @@ def init_db(db_path: Optional[Path] = None) -> None:
                 ON job_results(job_id)
                 """
             )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS wallet_explanations (
+                    job_id TEXT NOT NULL,
+                    wallet_id TEXT NOT NULL,
+                    explanation TEXT NOT NULL,
+                    model_used TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    PRIMARY KEY (job_id, wallet_id)
+                )
+                """
+            )
     finally:
         conn.close()
 
@@ -269,5 +281,82 @@ def get_result(
             (job_id, artifact_name),
         ).fetchone()
         return json.loads(row["payload"]) if row else None
+    finally:
+        conn.close()
+
+
+def save_wallet_explanation(
+    job_id: str,
+    wallet_id: str,
+    explanation: str,
+    model_used: str,
+    db_path: Optional[Path] = None,
+) -> None:
+    """Cache an LLM-generated wallet explanation."""
+    init_db(db_path)
+    conn = get_db_connection(db_path)
+    try:
+        with conn:
+            conn.execute(
+                """
+                INSERT INTO wallet_explanations
+                    (job_id, wallet_id, explanation, model_used, created_at)
+                VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(job_id, wallet_id) DO UPDATE SET
+                    explanation = excluded.explanation,
+                    model_used = excluded.model_used,
+                    created_at = excluded.created_at
+                """,
+                (
+                    job_id,
+                    wallet_id,
+                    explanation,
+                    model_used,
+                    datetime.now(timezone.utc).isoformat(),
+                ),
+            )
+    finally:
+        conn.close()
+
+
+def get_wallet_explanation(
+    job_id: str,
+    wallet_id: str,
+    db_path: Optional[Path] = None,
+) -> Optional[Dict[str, Any]]:
+    """Retrieve a cached wallet explanation, or None if not cached."""
+    init_db(db_path)
+    conn = get_db_connection(db_path)
+    try:
+        row = conn.execute(
+            "SELECT explanation, model_used, created_at "
+            "FROM wallet_explanations WHERE job_id = ? AND wallet_id = ?",
+            (job_id, wallet_id),
+        ).fetchone()
+        if not row:
+            return None
+        return {
+            "wallet_id": wallet_id,
+            "explanation": row["explanation"],
+            "model_used": row["model_used"],
+            "cached": True,
+        }
+    finally:
+        conn.close()
+
+
+def delete_wallet_explanations(
+    job_id: str,
+    db_path: Optional[Path] = None,
+) -> None:
+    """Clear all cached explanations for a job (e.g., after re-running pipeline)."""
+    init_db(db_path)
+    conn = get_db_connection(db_path)
+    try:
+        with conn:
+            conn.execute(
+                "DELETE FROM wallet_explanations WHERE job_id = ?",
+                (job_id,),
+            )
     finally:
         conn.close()
