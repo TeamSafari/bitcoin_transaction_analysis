@@ -1,5 +1,18 @@
 const API_BASE_URL = 'http://localhost:8000/api/v1';
 
+const handleResponse = async (response) => {
+    if (response.status === 202) {
+        // Job still processing — return the body as-is (it's a valid detail message)
+        const data = await response.json().catch(() => ({}));
+        return { status: 'processing', progress: data.detail ? 50 : 0, step: String(data.detail || 'Processing...') };
+    }
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text);
+    }
+    return response.json();
+};
+
 export const uploadCSV = async (fileMap) => {
     const formData = new FormData();
     for (const [key, file] of Object.entries(fileMap)) {
@@ -11,15 +24,14 @@ export const uploadCSV = async (fileMap) => {
     });
     if (!response.ok) {
         const text = await response.text();
-        throw new Error(`Upload failed: ${text}`);
+        throw new Error(`Upload failed (${response.status}): ${text}`);
     }
     return response.json();
 };
 
 export const pollJobStatus = async (jobId) => {
     const response = await fetch(`${API_BASE_URL}/jobs/${jobId}/status`);
-    if (!response.ok) throw new Error('Status check failed');
-    return response.json();
+    return handleResponse(response);
 };
 
 export const fetchJobsList = async () => {
@@ -45,17 +57,23 @@ export const fetchJobSummary = async (jobId) => {
 };
 
 export const fetchGraphData = async (jobId) => {
-    const url = jobId ? `${API_BASE_URL}/jobs/${jobId}/graph/overview` : `${API_BASE_URL}/graph/overview`;
+    const url = jobId
+        ? `${API_BASE_URL}/jobs/${jobId}/graph/overview?max_nodes=500`
+        : `${API_BASE_URL}/graph/overview?max_nodes=500`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to fetch graph data');
+    if (!response.ok) throw new Error(`Failed to fetch graph data (${response.status})`);
     const data = await response.json();
     
     // Map backend JSON to Cytoscape format
+    // IMPORTANT: trust backend's is_anomaly boolean — do NOT re-derive from risk_probability
     const elements = [];
     (data.nodes || []).forEach(n => {
         const feats = n.wallet_features || {};
         const risk = n.risk_score !== undefined ? n.risk_score : (n.risk_probability || 0);
-        const isAnomaly = n.is_anomaly !== undefined ? n.is_anomaly : (risk >= 0.7);
+
+        // Trust the backend's classification flag directly
+        const isAnomaly = n.is_anomaly === true;
+
         const degree = n.degree || feats.degree || ((feats.in_degree || 0) + (feats.out_degree || 0)) || 0;
         const pagerank = n.pagerank || feats.pagerank || 0;
         const community = n.community_id || feats.community_id || '0';
@@ -106,7 +124,7 @@ export const fetchExplainability = async (jobId, walletId) => {
         ? `${API_BASE_URL}/jobs/${jobId}/explainability/wallet/${walletId}`
         : `${API_BASE_URL}/explainability/wallet/${walletId}`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to fetch explainability data');
+    if (!response.ok) throw new Error(`Failed to fetch explainability data (${response.status})`);
     return response.json();
 };
 
@@ -115,13 +133,22 @@ export const fetchTracePattern = async (jobId, walletId) => {
         ? `${API_BASE_URL}/jobs/${jobId}/patterns/trace/${walletId}`
         : `${API_BASE_URL}/patterns/trace/${walletId}`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to fetch trace pattern');
+    if (!response.ok) throw new Error(`Failed to fetch trace pattern (${response.status})`);
     return response.json();
 };
 
 export const fetchAlerts = async (jobId) => {
     const url = jobId ? `${API_BASE_URL}/jobs/${jobId}/alerts` : `${API_BASE_URL}/alerts`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to fetch alerts');
+    if (!response.ok) throw new Error(`Failed to fetch alerts (${response.status})`);
+    return response.json();
+};
+
+export const fetchLLMExplainability = async (jobId, walletId) => {
+    const url = jobId 
+        ? `${API_BASE_URL}/jobs/${jobId}/explain/wallet/${walletId}`
+        : `${API_BASE_URL}/explain/wallet/${walletId}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to fetch LLM explainability data (${response.status})`);
     return response.json();
 };

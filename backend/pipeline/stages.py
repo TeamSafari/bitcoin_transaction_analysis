@@ -438,6 +438,12 @@ def stage_risk_model(ctx: PipelineContext) -> Dict[str, Any]:
 
     x_data, wallet_ids = _prepare_risk_matrix(ctx.fused_features, feature_cols)
 
+    if hasattr(model, "set_params"):
+        try:
+            model.set_params(n_jobs=1)
+        except Exception:
+            pass
+
     if hasattr(model, "predict_proba"):
         probs = model.predict_proba(x_data)[:, 1]
     else:

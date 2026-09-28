@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
+os.environ["OMP_NUM_THREADS"] = "1"
+
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

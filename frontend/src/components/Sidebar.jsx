@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, ShieldCheck, Activity, Network, Target, ChevronRight, Loader, Zap, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
-import { fetchExplainability, fetchTracePattern } from '../utils/apiService';
+import { ShieldAlert, ShieldCheck, Activity, Network, Target, ChevronRight, Loader, Zap, ArrowUpRight, ArrowDownLeft, MessageSquare } from 'lucide-react';
+import { fetchExplainability, fetchTracePattern, fetchLLMExplainability } from '../utils/apiService';
 
 export default function Sidebar({ selectedNode, onTrace, jobId }) {
   const [activeTab, setActiveTab] = useState('SAGE');
@@ -8,11 +8,14 @@ export default function Sidebar({ selectedNode, onTrace, jobId }) {
   const [isLoadingShap, setIsLoadingShap] = useState(false);
   const [tracePattern, setTracePattern] = useState(null);
   const [isTracing, setIsTracing] = useState(false);
+  const [llmExplainData, setLlmExplainData] = useState(null);
+  const [isLoadingLLM, setIsLoadingLLM] = useState(false);
 
   useEffect(() => {
     if (!selectedNode) {
       setShapData(null);
       setTracePattern(null);
+      setLlmExplainData(null);
       return;
     }
 
@@ -34,6 +37,9 @@ export default function Sidebar({ selectedNode, onTrace, jobId }) {
         setTracePattern(res);
       })
       .catch(() => setTracePattern(null));
+      
+    // Clear LLM explanation on node switch
+    setLlmExplainData(null);
 
   }, [selectedNode, jobId]);
 
@@ -48,7 +54,7 @@ export default function Sidebar({ selectedNode, onTrace, jobId }) {
     );
   }
 
-  const isAnomaly = selectedNode.is_anomaly || selectedNode.risk_probability >= 0.7;
+  const isAnomaly = selectedNode.is_anomaly === true;
   const riskPct = ((selectedNode.risk_probability || 0) * 100).toFixed(1);
 
   const handleTraceClick = async () => {
@@ -57,6 +63,20 @@ export default function Sidebar({ selectedNode, onTrace, jobId }) {
       await onTrace(selectedNode.id);
     } finally {
       setIsTracing(false);
+    }
+  };
+
+  const handleFetchLLM = async () => {
+    if (!selectedNode) return;
+    setIsLoadingLLM(true);
+    try {
+      const res = await fetchLLMExplainability(jobId, selectedNode.id);
+      setLlmExplainData(res);
+    } catch (err) {
+      console.error("LLM Explainability Error:", err);
+      setLlmExplainData({ error: true, message: 'Failed to generate explanation. Ensure backend model is loaded.' });
+    } finally {
+      setIsLoadingLLM(false);
     }
   };
 
@@ -71,19 +91,33 @@ export default function Sidebar({ selectedNode, onTrace, jobId }) {
             {isAnomaly ? `High Risk (${riskPct}%)` : `Normal (${riskPct}%)`}
           </span>
         </div>
-        {tracePattern && (
-          <div style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'flex', gap: '8px', marginTop: '4px' }}>
-            <span>Pattern: <strong style={{ color: '#f59e0b' }}>{tracePattern.pattern}</strong></span>
-            <span>•</span>
-            <span>Hops: <strong>{tracePattern.hop_count}</strong></span>
-          </div>
-        )}
+        {tracePattern && (() => {
+          const patternMeta = {
+            cycle: { label: 'Cycle', color: '#f97316', desc: 'Circular fund flow detected' },
+            fan_out: { label: 'Fan-Out', color: '#ef4444', desc: 'Funds dispersed to many wallets' },
+            fan_in: { label: 'Fan-In', color: '#a855f7', desc: 'Funds consolidated from many wallets' },
+            peeling_chain: { label: 'Peeling Chain', color: '#eab308', desc: 'Sequential layering / mixing' },
+            direct_transfer: { label: 'Direct Transfer', color: '#22c55e', desc: 'Simple point-to-point flow' },
+          };
+          const meta = patternMeta[tracePattern.pattern] || { label: tracePattern.pattern, color: '#94a3b8', desc: '' };
+          return (
+            <div style={{ fontSize: '0.8rem', color: '#94a3b8', display: 'flex', gap: '8px', marginTop: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ background: meta.color + '22', color: meta.color, border: `1px solid ${meta.color}55`, borderRadius: '4px', padding: '2px 8px', fontWeight: 600 }}>
+                {meta.label}
+              </span>
+              <span style={{ color: '#64748b', fontStyle: 'italic' }}>{meta.desc}</span>
+              <span style={{ marginLeft: 'auto' }}>Hops: <strong style={{ color: '#cbd5e1' }}>{tracePattern.hop_count}</strong></span>
+            </div>
+          );
+        })()}
+
       </div>
 
       <div className="tabs">
         <div className={`tab ${activeTab === 'SAGE' ? 'active' : ''}`} onClick={() => setActiveTab('SAGE')}>Phase 1: GNN</div>
         <div className={`tab ${activeTab === 'ISOLATION' ? 'active' : ''}`} onClick={() => setActiveTab('ISOLATION')}>Phase 2: Risk</div>
-        <div className={`tab ${activeTab === 'EXPLAIN' ? 'active' : ''}`} onClick={() => setActiveTab('EXPLAIN')}>Phase 3: Explain</div>
+        <div className={`tab ${activeTab === 'EXPLAIN' ? 'active' : ''}`} onClick={() => setActiveTab('EXPLAIN')}>Phase 3: SHAP</div>
+        <div className={`tab ${activeTab === 'LLM' ? 'active' : ''}`} onClick={() => setActiveTab('LLM')}>Phase 4: LLM</div>
       </div>
 
       {activeTab === 'SAGE' && (
@@ -193,6 +227,45 @@ export default function Sidebar({ selectedNode, onTrace, jobId }) {
              </div>
           ) : (
              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>No SHAP factors returned for this node.</p>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'LLM' && (
+        <div className="panel-card" style={{ borderLeft: '4px solid #a855f7' }}>
+          <h3><MessageSquare size={16} style={{ display: 'inline', marginRight: '8px' }} /> LLM Analyst Explanation</h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '16px' }}>Natural language forensic summary driven by local LLM.</p>
+          
+          {!llmExplainData && !isLoadingLLM && (
+            <button className="btn" onClick={handleFetchLLM} style={{ width: '100%', background: '#a855f7', color: 'white', border: 'none', padding: '10px', borderRadius: '6px' }}>
+              <Zap size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              Generate Explanation
+            </button>
+          )}
+
+          {isLoadingLLM && (
+             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
+                 <Loader className="spinner" size={28} color="#a855f7" />
+                 <p style={{ marginTop: '12px', color: '#cbd5e1', fontSize: '0.9rem' }}>Thinking... This may take up to 20-30 seconds depending on the model.</p>
+             </div>
+          )}
+
+          {llmExplainData && !llmExplainData.error && (
+             <div style={{ marginTop: '12px', background: 'rgba(0,0,0,0.3)', padding: '16px', borderRadius: '8px', borderLeft: '3px solid #a855f7' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px solid #334155', paddingBottom: '8px' }}>
+                   <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Model: <strong>{llmExplainData.model_used}</strong></span>
+                   {llmExplainData.cached && <span style={{ fontSize: '0.75rem', background: '#334155', padding: '2px 6px', borderRadius: '4px' }}>Cached</span>}
+                </div>
+                <div style={{ fontSize: '0.9rem', color: '#f1f5f9', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                   {llmExplainData.explanation}
+                </div>
+             </div>
+          )}
+          
+          {llmExplainData && llmExplainData.error && (
+             <div style={{ marginTop: '12px', background: 'rgba(239,68,68,0.1)', padding: '12px', borderRadius: '8px', borderLeft: '3px solid #ef4444' }}>
+                <p style={{ color: '#fca5a5', fontSize: '0.9rem' }}>{llmExplainData.message}</p>
+             </div>
           )}
         </div>
       )}

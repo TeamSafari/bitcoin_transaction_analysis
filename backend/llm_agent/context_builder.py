@@ -249,6 +249,14 @@ def build_context(wallet_id: str, loader: DataLoader) -> tuple[str, str]:
     # Slice 1: Risk verdict
     risk = _build_risk_verdict(wallet_id, loader)
 
+    # Determine is_anomaly from risk predictions
+    is_anomaly = "unknown"
+    try:
+        risk_row = loader.risk_predictions.loc[wallet_id]
+        is_anomaly = str(bool(int(risk_row.get("risk_prediction", 0)))).lower()
+    except (KeyError, FileNotFoundError):
+        pass
+
     # Slice 2: SHAP factors
     shap_text = _build_shap_factors(wallet_id, loader)
 
@@ -261,6 +269,7 @@ def build_context(wallet_id: str, loader: DataLoader) -> tuple[str, str]:
     user_prompt = USER_PROMPT_TEMPLATE.format(
         wallet_id=wallet_id,
         risk_probability=risk["risk_probability"],
+        is_anomaly=is_anomaly,
         severity=risk["severity"],
         risk_level=risk["risk_level"],
         routing_action=risk["routing_action"],
@@ -272,3 +281,4 @@ def build_context(wallet_id: str, loader: DataLoader) -> tuple[str, str]:
     )
 
     return SYSTEM_PROMPT, user_prompt
+

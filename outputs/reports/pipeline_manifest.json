@@ -1,6 +1,6 @@
 {
   "status": "success",
-  "execution_time_seconds": 110.77,
+  "execution_time_seconds": 16.71,
   "stages_completed": [
     "Data Ingestion",
     "Identity Resolution",
@@ -23,8 +23,7 @@
   },
   "identity": {
     "wallets_linked_to_entities": 500,
-    "duplicate_entity_flags": 500,
-    "output_file": "outputs\\identity\\identity_resolution.csv"
+    "duplicate_entity_flags": 500
   },
   "features": {
     "feature_count": 58
@@ -56,8 +55,7 @@
     },
     "Identity Resolution": {
       "wallets_linked_to_entities": 500,
-      "duplicate_entity_flags": 500,
-      "output_file": "outputs\\identity\\identity_resolution.csv"
+      "duplicate_entity_flags": 500
     },
     "Graph Construction": {
       "edge_count": 10975,
@@ -76,7 +74,7 @@
       "anomaly_flags": 500
     },
     "Autoencoder": {
-      "mean_reconstruction_error": 1.9874707759169536e+16
+      "mean_reconstruction_error": 1.9874709906653184e+16
     },
     "Feature Fusion": {
       "fused_feature_count": 109

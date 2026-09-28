@@ -34,10 +34,18 @@ class GraphExplorer:
             }
 
     def _node_features(self, nid: str, preds: pd.DataFrame, graph_feats: pd.DataFrame, wallet_feats: pd.DataFrame) -> Node:
-        risk_score = float(preds.loc[nid]["risk_probability"]) if nid in preds.index else 0.5
-        is_anomaly = bool(
-            preds.loc[nid].get("risk_prediction", 0) == 1 or risk_score >= 0.7
-        ) if nid in preds.index else False
+        if nid in preds.index:
+            row = preds.loc[nid]
+            risk_score = float(row["risk_probability"]) if "risk_probability" in preds.columns else 0.5
+            # Use the model's binary classification label as ground truth for is_anomaly
+            if "risk_prediction" in preds.columns:
+                is_anomaly = bool(row["risk_prediction"] == 1)
+            else:
+                # Fallback only if column missing: use 0.7 threshold
+                is_anomaly = risk_score >= 0.7
+        else:
+            risk_score = 0.5
+            is_anomaly = False
 
         feat_dict: dict = {}
         if nid in graph_feats.index:
