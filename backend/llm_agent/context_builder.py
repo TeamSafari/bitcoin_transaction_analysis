@@ -41,6 +41,17 @@ def _sats_to_btc(sats: float) -> str:
     return f"{sats:.0f} sats"
 
 
+def _format_sats(sats: float) -> str:
+    """Format satoshis with 'sats' unit."""
+    try:
+        f_val = float(sats)
+        if f_val.is_integer():
+            return f"{int(f_val)} sats"
+        return f"{f_val:.0f} sats"
+    except (ValueError, TypeError):
+        return f"{sats} sats"
+
+
 def _seconds_to_human(seconds: float) -> str:
     """Convert seconds to a human-readable duration."""
     days = seconds / 86400
@@ -60,7 +71,7 @@ def _display_name(feature: str) -> str:
 def _format_feature_value(feature: str, value: float) -> str:
     """Format a feature value based on its type."""
     if "sats" in feature:
-        return _sats_to_btc(value)
+        return _format_sats(value)
     if "duration" in feature or "seconds" in feature:
         return _seconds_to_human(value)
     if isinstance(value, float):
@@ -238,6 +249,35 @@ def _build_anomaly_signals(wallet_id: str, loader: DataLoader) -> str:
 # ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
+# Transaction SATS helper
+# ---------------------------------------------------------------------------
+
+def _build_transaction_sats(wallet_id: str, loader: DataLoader) -> tuple[str, str]:
+    """Retrieve transaction input and output satoshis for the wallet/transaction."""
+    input_sats = "0 sats"
+    output_sats = "0 sats"
+
+    # Try wallet_features (total_received_sats = input, total_sent_sats = output)
+    try:
+        features_df = loader.wallet_features
+        if wallet_id in features_df.index:
+            row = features_df.loc[wallet_id]
+            in_val = row.get("total_received_sats")
+            out_val = row.get("total_sent_sats")
+            if in_val is not None and pd.notna(in_val):
+                input_sats = _format_sats(float(in_val))
+            if out_val is not None and pd.notna(out_val):
+                output_sats = _format_sats(float(out_val))
+            return input_sats, output_sats
+    except (KeyError, FileNotFoundError, Exception):
+        pass
+
+    return input_sats, output_sats
+
+
+# ---------------------------------------------------------------------------
+# Main entry point
+# ---------------------------------------------------------------------------
 
 def build_context(wallet_id: str, loader: DataLoader) -> tuple[str, str]:
     """
@@ -257,6 +297,9 @@ def build_context(wallet_id: str, loader: DataLoader) -> tuple[str, str]:
     except (KeyError, FileNotFoundError):
         pass
 
+    # Transaction input and output satoshis
+    input_sats, output_sats = _build_transaction_sats(wallet_id, loader)
+
     # Slice 2: SHAP factors
     shap_text = _build_shap_factors(wallet_id, loader)
 
@@ -268,6 +311,8 @@ def build_context(wallet_id: str, loader: DataLoader) -> tuple[str, str]:
 
     user_prompt = USER_PROMPT_TEMPLATE.format(
         wallet_id=wallet_id,
+        input_sats=input_sats,
+        output_sats=output_sats,
         risk_probability=risk["risk_probability"],
         is_anomaly=is_anomaly,
         severity=risk["severity"],
@@ -281,4 +326,5 @@ def build_context(wallet_id: str, loader: DataLoader) -> tuple[str, str]:
     )
 
     return SYSTEM_PROMPT, user_prompt
+
 
