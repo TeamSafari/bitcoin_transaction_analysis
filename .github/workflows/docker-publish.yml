@@ -18,6 +18,16 @@ jobs:
       packages: write
 
     steps:
+      # Step 0: Clear pre-installed bloat to free up ~30GB of disk space
+      - name: Maximize Build Disk Space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          docker image prune --all --force || true
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -32,13 +42,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Lowercase Repository Name
-        id: string
+        id: repo_name
         run: |
-          echo "REPO=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ steps.string.outputs.REPO }}:latest
+          tags: ${{ env.REGISTRY }}/${{ steps.repo_name.outputs.IMAGE_NAME }}:latest
