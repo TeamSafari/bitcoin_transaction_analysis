@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - docker-build
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -30,10 +31,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase Repository Name
+        id: string
+        run: |
+          echo "REPO=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          # Converts repository name (e.g. User/Repo-Name) to lowercase
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest
+          tags: ${{ env.REGISTRY }}/${{ steps.string.outputs.REPO }}:latest
