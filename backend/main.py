@@ -23,6 +23,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from backend.api.routes import alerts, explainability, graph, health, jobs, llm_explain, patterns
 from backend.config import ARTIFACT_DIR
@@ -66,16 +67,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {
-        "service": "Bitcoin Transaction Forensics API",
-        "version": "3.0.0",
-        "docs": "/docs",
-        "health": "/api/v1/health",
-        "upload": "POST /api/v1/jobs/upload",
-    }
-
 
 app.include_router(jobs.router)
 app.include_router(graph.router)
@@ -85,6 +76,7 @@ app.include_router(llm_explain.router)
 app.include_router(patterns.router)
 app.include_router(health.router)
 
+app.mount("/", StaticFiles(directory="dist", html=True), name="dist")
 
 def create_app() -> FastAPI:
     """Return the application instance (used by tests and ASGI servers)."""
@@ -94,4 +86,4 @@ def create_app() -> FastAPI:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
