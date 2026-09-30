@@ -76,7 +76,10 @@ app.include_router(llm_explain.router)
 app.include_router(patterns.router)
 app.include_router(health.router)
 
-# app.mount("/", StaticFiles(directory="dist", html=True), name="dist")
+dir_path = Path("dist")
+
+if dir_path.is_dir():
+    app.mount("/", StaticFiles(directory="dist", html=True), name="dist")
 
 def create_app() -> FastAPI:
     """Return the application instance (used by tests and ASGI servers)."""
