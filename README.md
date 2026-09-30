@@ -542,7 +542,7 @@ The backend also provides:
 
 ---
 
-# 14. React Investigation Dashboard
+# 14. Investigation Dashboard
 
 The frontend is designed around rapid visual investigation rather than raw data tables.
 
@@ -779,9 +779,9 @@ The LLM summarisation layer can run locally, avoiding the need to send sensitive
 
 ---
 
-# 20. Potential Extension
+# 20. Scalable Architecture
 
-Although the current implementation focuses on Bitcoin, the architecture is designed around reusable abstractions:
+Although the current implementation focuses on Bitcoin Transaction Analysis, the architecture is designed around reusable abstractions:
 
 ```text
 Chain-specific ingestion
@@ -801,7 +801,7 @@ This creates a path toward extending the system to additional blockchain ecosyst
 
 ---
 
-# 21. Closing
+# 21. Summary
 
 **Bitcoin Transaction Forensics** brings together data engineering, graph intelligence, machine learning, statistical analysis, explainability, and local language models into one investigation workflow.
 
@@ -816,8 +816,3 @@ to:
 > **“This wallet is flagged because of specific behavioral, graph, temporal, and network evidence — here is how the value moved, why the signals matter, and a concise explanation an investigator can act on.”**
 
 ---
-
-## Project Status
-
-This repository contains the implementation developed for the hackathon prototype, including the forensic data pipeline, feature engineering, hybrid detection stack, explainability layer, local LLM summarisation, API backend, and interactive investigation dashboard.
-
