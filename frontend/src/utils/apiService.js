@@ -56,12 +56,21 @@ export const fetchJobSummary = async (jobId) => {
     }
 };
 
-export const fetchGraphData = async (jobId) => {
+export const fetchGraphData = async (jobId, retries = 20) => {
     const url = jobId
         ? `${API_BASE_URL}/jobs/${jobId}/graph/overview?max_nodes=500`
         : `${API_BASE_URL}/graph/overview?max_nodes=500`;
-    const response = await fetch(url);
+    
+    let response;
+    for (let i = 0; i < retries; i++) {
+        response = await fetch(url);
+        if (response.status !== 202) break;
+        await new Promise(r => setTimeout(r, 1500));
+    }
+    
+    if (response.status === 202) throw new Error('Job is still processing after retries');
     if (!response.ok) throw new Error(`Failed to fetch graph data (${response.status})`);
+    
     const data = await response.json();
     
     // Map backend JSON to Cytoscape format

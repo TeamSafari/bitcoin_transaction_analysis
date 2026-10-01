@@ -3,18 +3,20 @@ import pandas as pd
 
 def require_columns(
     df: pd.DataFrame,
-    required: list[str],
+    required: list,
     table_name: str
 ):
-
-    missing = [
-        column
-        for column in required
-        if column not in df.columns
-    ]
+    missing = []
+    for req in required:
+        if isinstance(req, tuple):
+            # At least one of the columns in the tuple must exist
+            if not any(col in df.columns for col in req):
+                missing.append(req)
+        else:
+            if req not in df.columns:
+                missing.append(req)
 
     if missing:
-
         raise ValueError(
             f"{table_name}: missing columns: "
             f"{missing}"
@@ -31,7 +33,7 @@ def validate_schema(
             "wallet_id",
             "created_at",
             "script_type",
-            "initial_balance_btc",
+            ("initial_balance_btc", "initial_balance_sats"),
             "wallet_type",
             "primary_entity_id",
             "is_service",

@@ -103,9 +103,14 @@ def normalize_wallets(
     )
 
     if "initial_balance_btc" in df.columns:
-
         df["initial_balance_btc"] = pd.to_numeric(
             df["initial_balance_btc"],
+            errors="coerce"
+        )
+        
+    if "initial_balance_sats" in df.columns:
+        df["initial_balance_sats"] = pd.to_numeric(
+            df["initial_balance_sats"],
             errors="coerce"
         )
 

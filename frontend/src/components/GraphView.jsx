@@ -24,7 +24,7 @@ function findDirectCyclePair(cy, nodeId) {
   return null;
 }
 
-const GraphView = forwardRef(({ elements, onNodeSelect, searchQuery, jobId }, ref) => {
+const GraphView = forwardRef(({ elements, onNodeSelect, searchQuery, jobId, isDarkMode }, ref) => {
   const containerRef = useRef(null);
   const cyRef = useRef(null);
 
@@ -38,76 +38,79 @@ const GraphView = forwardRef(({ elements, onNodeSelect, searchQuery, jobId }, re
         {
           selector: 'node',
           style: {
-            'background-color': (ele) => ele.data('is_anomaly') ? '#ef4444' : '#3b82f6',
-            'width': (ele) => Math.max(16, Math.min(45, (ele.data('degree') || 0) * 0.8 + 12)),
-            'height': (ele) => Math.max(16, Math.min(45, (ele.data('degree') || 0) * 0.8 + 12)),
+            // 🔴 Anomaly = red, 🟢 Normal = green
+            'background-color': (ele) => ele.data('is_anomaly') ? '#e85454' : '#3dd68c',
+            'width': (ele) => Math.max(8, Math.min(20, (ele.data('degree') || 0) * 0.3 + 8)),
+            'height': (ele) => Math.max(8, Math.min(20, (ele.data('degree') || 0) * 0.3 + 8)),
             'label': 'data(id)',
-            'color': '#cbd5e1',
-            'font-size': '10px',
+            'color': isDarkMode ? '#cbd5e1' : '#64748b',
+            'font-size': '6px',
             'font-family': 'Inter, system-ui, sans-serif',
             'text-valign': 'bottom',
-            'text-margin-y': 6,
-            'border-width': (ele) => ele.data('is_anomaly') ? 3 : 1.5,
-            'border-color': (ele) => ele.data('is_anomaly') ? '#fca5a5' : '#93c5fd',
+            'text-margin-y': 3,
+            'border-width': 1,
+            'border-color': (ele) => ele.data('is_anomaly') ? 'rgba(232,84,84,0.6)' : 'rgba(61,214,140,0.5)',
           }
         },
         {
           selector: 'edge',
           style: {
-            'width': (ele) => Math.max(1, Math.min(6, (ele.data('gnn_influence_weight') || 0.5) * 4)),
-            'line-color': '#334155',
-            'target-arrow-color': '#334155',
+            'width': 0.8,
+            'line-color': isDarkMode ? 'rgba(71,85,105,0.4)' : 'rgba(100,116,139,0.35)',
+            'target-arrow-color': isDarkMode ? 'rgba(71,85,105,0.4)' : 'rgba(100,116,139,0.35)',
             'target-arrow-shape': 'triangle',
+            'arrow-scale': 1.5,
             'curve-style': 'bezier',
-            'opacity': 0.5
+            'opacity': isDarkMode ? 0.35 : 0.6
           }
         },
         { selector: '.dimmed', style: { 'display': 'none' } },
-        { selector: '.dimmed-soft', style: { 'opacity': 0.1 } },
-        { selector: '.highlighted', style: { 'opacity': 1, 'border-width': 4, 'border-color': '#ffffff', 'z-index': 99 } },
+        { selector: '.dimmed-soft', style: { 'opacity': 0.06 } },
+        {
+          selector: '.highlighted',
+          style: { 'opacity': 1, 'border-width': 2, 'border-color': isDarkMode ? '#e2e8f0' : '#1e293b', 'z-index': 99 }
+        },
         {
           selector: '.incoming-edge',
-          style: { 'opacity': 1, 'line-color': '#f59e0b', 'target-arrow-color': '#f59e0b', 'width': 4, 'z-index': 10 }
+          style: { 'opacity': 1, 'line-color': '#f0a142', 'target-arrow-color': '#f0a142', 'width': 1.8, 'z-index': 10, 'arrow-scale': 1.8 }
+        },
+        {
+          selector: '.outgoing-edge',
+          style: { 'opacity': 0.55, 'line-color': isDarkMode ? 'rgba(71,85,105,0.6)' : 'rgba(100,116,139,0.5)', 'width': 1.0, 'z-index': 5, 'arrow-scale': 1.5 }
         },
         {
           selector: '.trace-edge',
-          style: { 'opacity': 1, 'line-color': '#ef4444', 'target-arrow-color': '#ef4444', 'width': 6, 'z-index': 99 }
+          style: { 'opacity': 1, 'line-color': '#e85454', 'target-arrow-color': '#e85454', 'width': 2.5, 'z-index': 99, 'arrow-scale': 2.0 }
         },
-        // Cycle edges: bright orange with glow, thick, high z-index
         {
           selector: '.cycle-edge',
           style: {
-            'opacity': 1,
-            'line-color': '#fb923c',
-            'target-arrow-color': '#fb923c',
-            'width': 5,
-            'z-index': 98,
-            'line-style': 'solid',
-            'arrow-scale': 1.4,
+            'opacity': 1, 'line-color': '#fb923c', 'target-arrow-color': '#fb923c',
+            'width': 2.5, 'z-index': 98, 'arrow-scale': 2.0,
           }
         },
-        // Nodes that form the cycle: ring highlight
         {
           selector: '.cycle-node',
-          style: {
-            'border-width': 4,
-            'border-color': '#fb923c',
-            'border-style': 'solid',
-            'z-index': 97,
-            'opacity': 1,
-          }
+          style: { 'border-width': 2, 'border-color': '#fb923c', 'z-index': 97, 'opacity': 1 }
         },
       ],
       layout: {
         name: 'cose',
-        idealEdgeLength: 80,
+        idealEdgeLength: 400,       // Further increased to stretch connections
         nodeOverlap: 20,
         refresh: 20,
         fit: true,
-        padding: 40,
-        randomize: false,
-        componentSpacing: 100,
-        nodeRepulsion: 400000
+        padding: 50,
+        randomize: true,
+        componentSpacing: 400,
+        nodeRepulsion: 8000000,     // Doubled repulsion
+        edgeElasticity: 30,         // Reduced elasticity so edges can stretch more
+        nestingFactor: 5,
+        gravity: 0.05,              // Halved gravity to prevent it from pulling into a tight circle
+        numIter: 1500,
+        initialTemp: 300,
+        coolingFactor: 0.98,
+        minTemp: 1.0
       }
     });
 
@@ -152,8 +155,14 @@ const GraphView = forwardRef(({ elements, onNodeSelect, searchQuery, jobId }, re
       }
     });
 
-    return () => cy.destroy();
-  }, [elements]);
+    return () => {
+      if (cy) {
+        cy.stop();        // Stop any running layout animation
+        cyRef.current = null;  // Clear ref BEFORE destroy to prevent stale access
+        cy.destroy();
+      }
+    };
+  }, [elements, isDarkMode]);
 
   useEffect(() => {
     if (!cyRef.current) return;
