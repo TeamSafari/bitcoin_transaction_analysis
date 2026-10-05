@@ -2,6 +2,10 @@
 
 > **An explainable, multi-layered forensic intelligence platform for detecting suspicious Bitcoin wallets, tracing fund-flow patterns, and turning complex transaction/network behavior into investigator-ready risk narratives.**
 
+## Demo
+ - YouTube link: [Demo video](https://youtu.be/Bc4l2ncVcBg)
+ - PPT: [Pitch deck](https://canva.link/1v2x28z1rf03ywi)
+
 # Local Setup Instructions
 
 ## Prerequisites
