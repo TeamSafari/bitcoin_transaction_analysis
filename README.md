@@ -637,10 +637,9 @@ The current demonstration environment uses a compact synthetic forensic dataset 
 
 Representative data includes:
 
-- **50 wallets**
-- **196 transactions**
-- **12 synthetic entities**
-- **15 IP addresses**
+- **500 wallets**
+- **10000 transactions**
+- **15000 network observations**
 - transaction input/output relationships
 - network observations
 - wallet/entity links
