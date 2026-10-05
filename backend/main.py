@@ -21,7 +21,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -78,8 +78,18 @@ app.include_router(health.router)
 
 dir_path = Path("dist")
 
+class SinglePageApplication(StaticFiles):
+    async def get_response(self, path: str, scope):
+        try:
+            return await super().get_response(path, scope)
+        except (HTTPException, Exception) as ex:
+            # Fall back to index.html if file/route is not found
+            if isinstance(ex, HTTPException) and ex.status_code == 404:
+                return await super().get_response("index.html", scope)
+            raise ex
+
 if dir_path.is_dir():
-    app.mount("/", StaticFiles(directory="dist", html=True), name="dist")
+    app.mount("/", SinglePageApplication(directory="dist", html=True), name="dist")
 
 def create_app() -> FastAPI:
     """Return the application instance (used by tests and ASGI servers)."""
