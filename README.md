@@ -87,7 +87,7 @@ Our solution is an **end-to-end forensic analytics pipeline** that transforms ra
 
 Instead of relying on a single detection rule or black-box model, the platform combines **graph analytics, supervised ML, unsupervised anomaly detection, deterministic statistics, and local LLM summarisation**.
 
-### High-level flow
+### Work Flow
 
 ```text
 Raw Transaction + Network Data
@@ -675,7 +675,7 @@ This makes individual components easier to test, replace, scale, and extend.
 
 ---
 
-# 16. Synthetic / Demo Dataset
+# 16. Dataset Used
 
 The current demonstration environment uses a compact synthetic forensic dataset designed to exercise the entire pipeline.
 
@@ -844,11 +844,11 @@ This creates a path toward extending the system to additional blockchain ecosyst
 
 ---
 
-# 21. Summary
+# 21. Conclusion
 
-**Bitcoin Transaction Forensics** brings together data engineering, graph intelligence, machine learning, statistical analysis, explainability, and local language models into one investigation workflow.
+**Bitcoin Transaction Forensics** brings together data engineering, graph intelligence, machine learning, statistical analysis, explainability, and local LLM into one investigation workflow.
 
-The objective is not simply to produce an anomaly score.
+The vision is not simply to produce a flag.
 
 It is to move from:
 
