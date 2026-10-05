@@ -2,6 +2,50 @@
 
 > **An explainable, multi-layered forensic intelligence platform for detecting suspicious Bitcoin wallets, tracing fund-flow patterns, and turning complex transaction/network behavior into investigator-ready risk narratives.**
 
+# Local Setup Instructions
+
+## Prerequisites
+
+Before setting up the application locally, make sure you have:
+
+- **Docker** installed and running
+- At least **6 GB of available RAM**
+- A web browser (**Google Chrome is recommended**)
+
+## Setup Steps
+
+### 1. Install Docker
+
+Install Docker on your system and make sure the Docker service is running.
+
+### 2. Pull the Docker Image
+
+Open a terminal and run the following command:
+
+```bash
+docker pull ghcr.io/teamsafari/bitcoin_transaction_analysis:latest
+```
+
+Wait for the image to be downloaded and extracted completely.
+
+### 3. Run the Application
+
+Once the Docker image has been successfully downloaded, run:
+
+```bash
+docker run -p 8000:8000 ghcr.io/teamsafari/bitcoin_transaction_analysis:latest
+```
+
+Keep the terminal running while using the application.
+
+### 4. Open the Application
+
+Open your browser and navigate to:
+
+```text
+http://localhost:8000
+```
+
 ---
 
 ## 1. Problem Statement
